@@ -1,8 +1,6 @@
 from typing import List
 from urllib.parse import unquote
 
-from attr import attributes
-
 
 class HomeeAttribute:
     def __init__(self, data: dict) -> None:
