@@ -63,6 +63,7 @@ class MyHomee(Homee):
 Example implementation that dumps all info into a json file and logs whenever a light is turned on or off:
 ```python
 from pymee.const import NodeProfile, AttributeType
+from pymee.model import HomeeAttribute
 
 class JsonHomee(Homee):
     def on_message(self, msg: dict):
