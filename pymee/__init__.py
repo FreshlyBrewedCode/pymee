@@ -76,8 +76,9 @@ class Homee:
             req = await client.post(
                 url, auth=auth, data=data, headers=headers, timeout=5
             )
-        except asyncio.TimeoutError:
-            raise Exception("Unable to connect to homee")
+        except asyncio.TimeoutError as e:
+            await client.close()
+            raise e
 
         try:
             reqText = await req.text()
@@ -90,7 +91,8 @@ class Homee:
             self.retries = 0
 
         except:
-            raise Exception("Authentication failed")
+            await client.close()
+            raise AuthenticationFailedException()
 
         await client.close()
         return self.token
@@ -301,3 +303,11 @@ class Homee:
 
     def _log(self, msg: str):
         logging.info(msg)
+
+
+class HomeeException(Exception):
+    """Base class for all errors thrown by this library"""
+
+
+class AuthenticationFailedException(HomeeException):
+    """Raised if no valid access token could be acquired."""
