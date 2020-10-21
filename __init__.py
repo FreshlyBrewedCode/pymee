@@ -278,25 +278,26 @@ class Homee:
         return f"ws://{self.host}:7681"
 
     def on_reconnect(self):
+        """TODO"""
         pass
 
     def on_max_retries(self):
-        pass
+        """Called if the maximum amount of retries was reached."""
 
     def on_connected(self):
-        pass
+        """Called once the websocket connection has been established."""
 
     def on_disconnected(self):
-        pass
+        """Called after the websocket connection has been closed."""
 
     def on_error(self, error: str):
-        pass
+        """Called after an error has occurred."""
 
     def on_message(self, msg: dict):
-        pass
+        """Called when the websocket receives a message. The message is automatically parsed from json into a dictionary."""
 
-    def on_attribute_updated(self, attribute_data, node):
-        pass
+    def on_attribute_updated(self, attribute_data: dict, node: HomeeNode):
+        """Called when an 'attribute' message was received and an attribute was updated. Contains the parsed json attribute data and the corresponding node instance."""
 
     def _log(self, msg: str):
         logging.info(msg)
