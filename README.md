@@ -5,7 +5,10 @@ Large parts of this library are directly ported from the awesome [homeeApi](http
 
 # Installation
 
-TODO
+Install from [PyPi](https://pypi.org/project/pymee/):
+```
+pip install pymee
+```
 
 # Usage
 

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pymee",
-    version="0.0.1",
+    version="0.1.0",
     author="FreshlyBrewedCode",
     description="a python library to interact with homee",
     long_description=long_description,
