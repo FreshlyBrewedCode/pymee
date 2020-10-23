@@ -269,8 +269,14 @@ class Homee:
         else:
             self.nodes.append(HomeeNode(node_data))
 
-    def get_node_index(self, nodeId: int):
+    def get_node_index(self, nodeId: int) -> int:
+        """Returns the index of the node with the given id or -1 if no node with the given id exists."""
         return next((i for i, node in enumerate(self.nodes) if node.id == nodeId), -1)
+
+    def get_node_by_id(self, nodeId: int) -> HomeeNode:
+        """Returns the node with the given id or `None` if no node with the given id exists."""
+        index = self.get_node_index(nodeId)
+        return self.nodes[index] if index != -1 else None
 
     async def set_value(self, deviceId: int, attributeId: int, value: int):
         """Set the target value of an attribute of a device."""
