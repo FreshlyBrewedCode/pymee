@@ -182,6 +182,7 @@ class Homee:
         # if not self.shouldClose and self.retries <= 1:
 
         self.connected = False
+        self._disconnected_event.set()
 
         await self.on_disconnected()
         # if self.shouldReconnect and not self.shouldClose:
@@ -291,9 +292,13 @@ class Homee:
 
         return f"ws://{self.host}:7681"
 
-    @property
-    def is_connected(self):
+    def wait_until_connected(self):
+        """"Returns a coroutine that runs until a connection has been established and the initial data has been received."""
         return self._connected_event.wait()
+
+    def wait_until_disconnected(self):
+        """Returns a coroutine that runs until the connection has been closed."""
+        return self._disconnected_event.wait()
 
     def on_reconnect(self):
         """TODO"""
