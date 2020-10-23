@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.1 (2020-10-23)
+### Fix
+* Bump to v1.0.1 to avoid PyPI conflict ([`573e700`](https://github.com/FreshlyBrewedCode/pymee/commit/573e70054d3711196b3e39d1cc9ba80b4794a13a))
+
 ## v1.0.0 (2020-10-23)
 ### Feature
 * Add utility methods for getting nodes and atributes by id ([`f43014c`](https://github.com/FreshlyBrewedCode/pymee/commit/f43014cb77da7a4059695663a093a4acfb3b5d02))
