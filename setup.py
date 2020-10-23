@@ -1,11 +1,13 @@
 import setuptools
 
+__version__ = "0.1.0"
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="pymee",
-    version="0.1.0",
+    version=__version__,
     author="FreshlyBrewedCode",
     description="a python library to interact with homee",
     long_description=long_description,
