@@ -1,16 +1,20 @@
-# Overview
+# pymee
+![PyPI](https://img.shields.io/pypi/v/pymee)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pymee?color=blue&logo=python&logoColor=yellow)
+![GitHub last commit](https://img.shields.io/github/last-commit/FreshlyBrewedCode/pymee)
+
 pymee is an unofficial python library for interacting with the [homee](https://hom.ee) smart home/home automation platform. It uses [websocket-client's](https://github.com/websocket-client/websocket-client) `websocket.WebsocketApp` to connect to a local homee cube and maintains a list of nodes (devices), attributes, groups and more that are updated whenever new data arrives from homee.
 
 Large parts of this library are directly ported from the awesome [homeeApi](https://github.com/stfnhmplr/homee-api) javascript library.
 
-# Installation
+## Installation
 
 Install from [PyPi](https://pypi.org/project/pymee/):
 ```
 pip install pymee
 ```
 
-# Usage
+## Usage
 
 pymee can be used with `asyncio`:
 ```python
@@ -95,5 +99,5 @@ class JsonHomee(Homee):
             )
 ```
 
-# License
+## License
 MIT
