@@ -197,10 +197,18 @@ class HomeeNode:
     def get_attribute_by_type(self, type: int) -> HomeeAttribute:
         return self._attribute_map[type]
 
+    def get_attribute_by_id(self, attributeId: int) -> HomeeAttribute:
+        index = self.get_attribute_index(attributeId)
+        return self.attributes[index] if index != -1 else None
+
     def _update_attribute(self, attribute: dict):
         index = self.get_attribute_index(attribute["id"])
         if index != -1:
             self.attributes[index]._data = attribute
+
+    def _update_attributes(self, attributes: List[dict]):
+        for attr in attributes:
+            self._update_attribute(attr)
 
     def _remap_attributes(self):
         if self._attribute_map != None:
