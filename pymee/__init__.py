@@ -237,7 +237,7 @@ class Homee:
         elif msgType == "groups":
             self.groups = msg["groups"]
         elif msgType == "node":
-            self._update_node(msg["node"])
+            self._update_or_create_node(msg["node"])
         elif msgType == "nodes":
             self.nodes = msg["nodes"]
         elif msgType == "relationships":
@@ -261,8 +261,13 @@ class Homee:
         # except:
         #     self._log("Unable to update attribute")
 
-    def _update_node(self, node: dict):
-        pass
+    def _update_or_create_node(self, node_data: dict):
+        existingNode = self.get_node_by_id(node_data["id"])
+        if existingNode != None:
+            existingNode._data = node_data
+            existingNode._update_attributes(node_data["attributes"])
+        else:
+            self.nodes.append(HomeeNode(node_data))
 
     def get_node_index(self, nodeId: int):
         return next((i for i, node in enumerate(self.nodes) if node.id == nodeId), -1)

@@ -202,6 +202,10 @@ class HomeeNode:
         if index != -1:
             self.attributes[index]._data = attribute
 
+    def _update_attributes(self, attributes: List[dict]):
+        for attr in attributes:
+            self._update_attribute(attr)
+
     def _remap_attributes(self):
         if self._attribute_map != None:
             self._attribute_map.clear()
