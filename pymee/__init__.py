@@ -4,7 +4,6 @@ import json
 from typing import List
 import aiohttp
 from aiohttp.helpers import BasicAuth
-import websocket
 import websockets
 from datetime import datetime
 from pymee.const import DeviceApp, DeviceOS, DeviceType
@@ -48,6 +47,7 @@ class Homee:
 
         self._message_queue = asyncio.Queue(loop=loop)
         self._connected_event = asyncio.Event(loop=loop)
+        self._disconnected_event = asyncio.Event(loop=loop)
 
     async def get_access_token(self):
         """Asynchronously attempts to get an access token from the homee host using username and password."""
@@ -147,10 +147,10 @@ class Homee:
                         task.cancel()
         except Exception as e:
             # TODO retry logic
-            self._ws_on_error(e)
+            await self._ws_on_error(e)
             raise e
 
-        self._ws_on_close()
+        await self._ws_on_close()
 
     async def _ws_receive_handler(self, ws: websockets.WebSocketClientProtocol):
         msg = await ws.recv()
@@ -169,7 +169,7 @@ class Homee:
         self.connected = True
         self.retries = 1
 
-        self.on_connected()
+        await self.on_connected()
         await self.send("GET:all")
 
     async def _ws_on_message(self, msg: str):
@@ -177,21 +177,21 @@ class Homee:
 
         await self._handle_message(json.loads(msg))
 
-    def _ws_on_close(self):
+    async def _ws_on_close(self):
         """Websocket on_close callback."""
         # if not self.shouldClose and self.retries <= 1:
 
         self.connected = False
 
-        self.on_disconnected()
+        await self.on_disconnected()
         # if self.shouldReconnect and not self.shouldClose:
         # self.reconnect()
 
-    def _ws_on_error(self, error):
+    async def _ws_on_error(self, error):
         """Websocket on_error callback."""
 
         self._log(f"An error occurred: {error}")
-        self.on_error(error)
+        await self.on_error(error)
 
     async def send(self, msg: str):
         """Send a raw string message to homee."""
@@ -221,7 +221,7 @@ class Homee:
             msgType = list(msg)[0]
         except:
             self._log(f"Invalid message: {msg}")
-            self.on_error()
+            await self.on_error()
             return
 
         self._log(msg)
@@ -232,7 +232,7 @@ class Homee:
             self.relationships = msg["all"]["relationships"]
             self._connected_event.set()
         elif msgType == "attribute":
-            self._handle_attribute_change(msg["attribute"])
+            await self._handle_attribute_change(msg["attribute"])
         elif msgType == "groups":
             self.groups = msg["groups"]
         elif msgType == "node":
@@ -244,23 +244,19 @@ class Homee:
         else:
             self._log(f"Unknown/Unsupported message type: {msgType}")
 
-        self.on_message(msg)
+        await self.on_message(msg)
 
-    def _handle_attribute_change(self, attribute_data: dict):
+    async def _handle_attribute_change(self, attribute_data: dict):
         """Internal handleling of an attribute changed message."""
 
         self._log(f"Updating attribute {attribute_data['id']}")
 
         # try:
         attrNodeId = attribute_data["node_id"]
-        nodeIndex = self.get_node_index(attrNodeId)
-        attrIndex = next(
-            i
-            for i, attr in enumerate(self.nodes[nodeIndex].attributes)
-            if attr.id == attribute_data["id"]
-        )
-        self.nodes[nodeIndex]._update_attribute(attribute_data)
-        self.on_attribute_updated(attribute_data, self.nodes[nodeIndex])
+        node = self.get_node_by_id(attrNodeId)
+        if node != None:
+            node._update_attribute(attribute_data)
+            await self.on_attribute_updated(attribute_data, node)
         # except:
         #     self._log("Unable to update attribute")
 
@@ -306,19 +302,19 @@ class Homee:
     def on_max_retries(self):
         """Called if the maximum amount of retries was reached."""
 
-    def on_connected(self):
+    async def on_connected(self):
         """Called once the websocket connection has been established."""
 
-    def on_disconnected(self):
+    async def on_disconnected(self):
         """Called after the websocket connection has been closed."""
 
-    def on_error(self, error: str):
+    async def on_error(self, error: str = None):
         """Called after an error has occurred."""
 
-    def on_message(self, msg: dict):
+    async def on_message(self, msg: dict):
         """Called when the websocket receives a message. The message is automatically parsed from json into a dictionary."""
 
-    def on_attribute_updated(self, attribute_data: dict, node: HomeeNode):
+    async def on_attribute_updated(self, attribute_data: dict, node: HomeeNode):
         """Called when an 'attribute' message was received and an attribute was updated. Contains the parsed json attribute data and the corresponding node instance."""
 
     def _log(self, msg: str):
