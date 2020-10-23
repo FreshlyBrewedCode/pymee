@@ -9,7 +9,7 @@ Large parts of this library are directly ported from the awesome [homeeApi](http
 
 ## Installation
 
-Install from [PyPi](https://pypi.org/project/pymee/):
+Install from [PyPI](https://pypi.org/project/pymee/):
 ```
 pip install pymee
 ```
