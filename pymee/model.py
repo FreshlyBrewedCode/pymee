@@ -1,4 +1,4 @@
-from typing import List
+from typing import Callable, List
 from urllib.parse import unquote
 
 
@@ -110,6 +110,7 @@ class HomeeNode:
             self.attributes.append(HomeeAttribute(a))
         self._attribute_map: dict = None
         self._remap_attributes()
+        self._onChangedListeners = []
 
     @property
     def id(self) -> int:
@@ -201,10 +202,21 @@ class HomeeNode:
         index = self.get_attribute_index(attributeId)
         return self.attributes[index] if index != -1 else None
 
-    def _update_attribute(self, attribute: dict):
-        index = self.get_attribute_index(attribute["id"])
-        if index != -1:
-            self.attributes[index]._data = attribute
+    def add_on_changed_listener(self, listener: Callable) -> Callable:
+        self._onChangedListeners.append(listener)
+
+        def remove_listener():
+            self._onChangedListeners.remove(listener)
+
+        return remove_listener
+
+    def _update_attribute(self, attribute_data: dict):
+        attribute = self.get_attribute_by_id(attribute_data["id"])
+        if attribute != None:
+            attribute._data = attribute_data
+            result = [
+                listener(self, attribute) for listener in self._onChangedListeners
+            ]
 
     def _update_attributes(self, attributes: List[dict]):
         for attr in attributes:
