@@ -278,7 +278,7 @@ class Homee:
         index = self.get_node_index(nodeId)
         return self.nodes[index] if index != -1 else None
 
-    async def set_value(self, deviceId: int, attributeId: int, value: int):
+    async def set_value(self, deviceId: int, attributeId: int, value: float):
         """Set the target value of an attribute of a device."""
 
         self._log(f"Set value: Device: {deviceId} Attribute: {attributeId} To: {value}")
