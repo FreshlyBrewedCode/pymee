@@ -153,13 +153,21 @@ class Homee:
         await self._ws_on_close()
 
     async def _ws_receive_handler(self, ws: websockets.WebSocketClientProtocol):
-        msg = await ws.recv()
-        await self._ws_on_message(msg)
+        try:
+            msg = await ws.recv()
+            await self._ws_on_message(msg)
+        except Exception as e:
+            if not self.shouldClose:
+                raise e
 
     async def _ws_send_handler(self, ws: websockets.WebSocketClientProtocol):
-        msg = await self._message_queue.get()
-        if self.connected and not self.shouldClose:
-            await ws.send(msg)
+        try:
+            msg = await self._message_queue.get()
+            if self.connected and not self.shouldClose:
+                await ws.send(msg)
+        except Exception as e:
+            if not self.shouldClose:
+                raise e
 
     async def _ws_on_open(self):
         """Websocket on_open callback."""
