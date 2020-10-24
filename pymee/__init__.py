@@ -6,8 +6,8 @@ import aiohttp
 from aiohttp.helpers import BasicAuth
 import websockets
 from datetime import datetime
-from pymee.const import DeviceApp, DeviceOS, DeviceType
-from pymee.model import HomeeNode
+from .const import DeviceApp, DeviceOS, DeviceType
+from .model import HomeeAttribute, HomeeNode
 import re
 import logging
 
