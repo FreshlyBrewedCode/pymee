@@ -2,6 +2,15 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.0 (2020-10-24)
+### Feature
+* Add `add_on_changed_listener()` to `HomeeNode` to support better update handling ([`12cc3d1`](https://github.com/FreshlyBrewedCode/pymee/commit/12cc3d17ea6aa4cc3354b76f97e1833ac7b029a5))
+
+### Fix
+* Add error handling to websocket receive and send handlers ([`6e9f021`](https://github.com/FreshlyBrewedCode/pymee/commit/6e9f02191ea2d107563d962a42681d1f18f54c5b))
+* Change value type in `set_value()` from `int` to `float` ([`0974bac`](https://github.com/FreshlyBrewedCode/pymee/commit/0974bacd8a78b0103d222d7357b502e6fb63e042))
+* Use module relative imports ([`4f33a6f`](https://github.com/FreshlyBrewedCode/pymee/commit/4f33a6f6ae8cde8ac788e1d9e02a2d4ec0d9b666))
+
 ## v1.0.1 (2020-10-23)
 ### Fix
 * Bump to v1.0.1 to avoid PyPI conflict ([`573e700`](https://github.com/FreshlyBrewedCode/pymee/commit/573e70054d3711196b3e39d1cc9ba80b4794a13a))
