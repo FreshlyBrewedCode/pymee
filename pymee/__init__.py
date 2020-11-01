@@ -136,19 +136,38 @@ class Homee:
                 subprotocols=["v2"],
             ) as ws:
                 await self._ws_on_open()
-                while not self.shouldClose:
-                    receive_task = asyncio.ensure_future(self._ws_receive_handler(ws))
-                    send_task = asyncio.ensure_future(self._ws_send_handler(ws))
-                    done, pending = await asyncio.wait(
-                        [receive_task, send_task],
-                        return_when=asyncio.FIRST_COMPLETED,
-                    )
-                    for task in pending:
-                        task.cancel()
+                while not self.shouldClose and self.connected:
+                    try:
+                        receive_task = asyncio.ensure_future(
+                            self._ws_receive_handler(ws)
+                        )
+                        send_task = asyncio.ensure_future(self._ws_send_handler(ws))
+                        done, pending = await asyncio.wait(
+                            [receive_task, send_task],
+                            return_when=asyncio.FIRST_COMPLETED,
+                        )
+
+                        exceptions = []
+
+                        # Kill pending tasks
+                        for task in pending:
+                            exceptions.append(task.exception())
+                            task.cancel()
+
+                        # Check if we finished with an exception
+                        for task in done:
+                            exceptions.append(task.exception())
+
+                        if exceptions and exceptions[0] is not None:
+                            raise exceptions[0]
+
+                    except websockets.exceptions.ConnectionClosed as e:
+                        self.connected = False
+                        await self.on_disconnected()
         except Exception as e:
             # TODO retry logic
             await self._ws_on_error(e)
-            raise e
+            # raise e
 
         await self._ws_on_close()
 
