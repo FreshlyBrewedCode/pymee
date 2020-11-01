@@ -141,3 +141,4 @@ cython_debug/
 
 # Private testing file
 testing.py
+homee.json
