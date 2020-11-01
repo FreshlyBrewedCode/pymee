@@ -136,7 +136,7 @@ class Homee:
                 subprotocols=["v2"],
             ) as ws:
                 await self._ws_on_open()
-                while not self.shouldClose and self.connected:
+                while (not self.shouldClose) and self.connected:
                     try:
                         receive_task = asyncio.ensure_future(
                             self._ws_receive_handler(ws)
@@ -151,7 +151,6 @@ class Homee:
 
                         # Kill pending tasks
                         for task in pending:
-                            exceptions.append(task.exception())
                             task.cancel()
 
                         # Check if we finished with an exception
@@ -175,6 +174,8 @@ class Homee:
         try:
             msg = await ws.recv()
             await self._ws_on_message(msg)
+        except websockets.exceptions.ConnectionClosedOK:
+            return
         except Exception as e:
             if not self.shouldClose:
                 raise e
