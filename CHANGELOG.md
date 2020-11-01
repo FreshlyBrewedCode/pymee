@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.2 (2020-11-01)
+### Fix
+* Fix exception handling bug that causes connection to close instantly ([`050d1d0`](https://github.com/FreshlyBrewedCode/pymee/commit/050d1d04c2b8bca243de1c8d50886ecce580aa67))
+
 ## v1.1.1 (2020-11-01)
 ### Fix
 * Fix websocket exceptions not getting handled correctly causing websocket to stay open ([`624b383`](https://github.com/FreshlyBrewedCode/pymee/commit/624b383736371d44dfade05fdc803fb6f78c8bcd))
