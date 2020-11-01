@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.1 (2020-11-01)
+### Fix
+* Fix websocket exceptions not getting handled correctly causing websocket to stay open ([`624b383`](https://github.com/FreshlyBrewedCode/pymee/commit/624b383736371d44dfade05fdc803fb6f78c8bcd))
+
+### Documentation
+* Add link to websockets library in README ([`5f42af6`](https://github.com/FreshlyBrewedCode/pymee/commit/5f42af6367bea667dca275009cda2010e9e4712e))
+* Update examples in README ([`0177066`](https://github.com/FreshlyBrewedCode/pymee/commit/01770668ecdd43ca364c96d6341f47080fc9ced3))
+
 ## v1.1.0 (2020-10-24)
 ### Feature
 * Add `add_on_changed_listener()` to `HomeeNode` to support better update handling ([`12cc3d1`](https://github.com/FreshlyBrewedCode/pymee/commit/12cc3d17ea6aa4cc3354b76f97e1833ac7b029a5))
