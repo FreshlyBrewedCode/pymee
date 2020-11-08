@@ -229,3 +229,50 @@ class HomeeNode:
             self._attribute_map = {}
         for a in self.attributes:
             self._attribute_map[a.type] = a
+class HomeeGroup:
+    def __init__(self, data) -> None:
+        self._data = data
+
+    @property
+    def id(self):
+        return self._data["id"]
+
+    @property
+    def name(self):
+        return self._data["name"]
+
+    @property
+    def image(self):
+        return self._data["image"]
+
+    @property
+    def order(self):
+        return self._data["order"]
+
+    @property
+    def added(self):
+        return self._data["added"]
+
+    @property
+    def state(self):
+        return self._data["state"]
+
+    @property
+    def category(self):
+        return self._data["category"]
+
+    @property
+    def phonetic_name(self):
+        return self._data["phonetic_name"]
+
+    @property
+    def note(self):
+        return self._data["note"]
+
+    @property
+    def services(self):
+        return self._data["services"]
+
+    @property
+    def owner(self):
+        return self._data["owner"]
