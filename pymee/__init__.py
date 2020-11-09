@@ -7,7 +7,13 @@ from aiohttp.helpers import BasicAuth
 import websockets
 from datetime import datetime
 from .const import DeviceApp, DeviceOS, DeviceType
-from .model import HomeeAttribute, HomeeNode
+from .model import (
+    HomeeAttribute,
+    HomeeGroup,
+    HomeeNode,
+    HomeeRelationship,
+    HomeeSettings,
+)
 import re
 import logging
 
@@ -36,9 +42,10 @@ class Homee:
 
         self.deviceId = str(device).lower().replace(" ", "-")
 
+        self.settings: HomeeSettings = None
         self.nodes: List[HomeeNode] = []
-        self.groups = []
-        self.relationships = []
+        self.groups: List[HomeeGroup] = []
+        self.relationships: List[HomeeRelationship] = []
         self.token = ""
         self.expires = 0
         self.connected = False
@@ -256,9 +263,13 @@ class Homee:
         self._log(msg)
 
         if msgType == "all":
+            self.settings = HomeeSettings(msg["all"]["settings"])
             self.nodes = list(map(lambda n: HomeeNode(n), msg["all"]["nodes"]))
-            self.groups = msg["all"]["groups"]
-            self.relationships = msg["all"]["relationships"]
+            self.groups = list(map(lambda g: HomeeGroup(g), msg["all"]["groups"]))
+            self.relationships = list(
+                map(lambda r: HomeeRelationship(r), msg["all"]["relationships"])
+            )
+            self._remap_relationships()
             self._connected_event.set()
         elif msgType == "attribute":
             await self._handle_attribute_change(msg["attribute"])
@@ -267,9 +278,20 @@ class Homee:
         elif msgType == "node":
             self._update_or_create_node(msg["node"])
         elif msgType == "nodes":
+            # TODO: call update_or_create_node for each node
             self.nodes = msg["nodes"]
         elif msgType == "relationships":
-            self.relationships = msg["relationships"]
+            self.relationships = list(
+                map(lambda r: HomeeRelationship(r), msg["relationships"])
+            )
+            self._remap_relationships()
+        elif msgType == "group":
+            # TODO: update_or_create_group
+            pass
+        elif msgType == "relationship":
+            # TODO update_or_create_relationship
+            self._remap_relationships()
+            pass
         else:
             self._log(f"Unknown/Unsupported message type: {msgType}")
 
@@ -297,6 +319,23 @@ class Homee:
         else:
             self.nodes.append(HomeeNode(node_data))
 
+    def _remap_relationships(self):
+        """Remap the relationships between nodes and groups defined by the relationships list."""
+
+        # Clear existing relationships
+        for n in self.nodes:
+            n.groups.clear()
+        for g in self.groups:
+            g.nodes.clear()
+
+        for r in self.relationships:
+            node = self.get_node_by_id(r.node_id)
+            group = self.get_group_by_id(r.group_id)
+
+            if node is not None and group is not None:
+                node.groups.append(group)
+                group.nodes.append(node)
+
     def get_node_index(self, nodeId: int) -> int:
         """Returns the index of the node with the given id or -1 if no node with the given id exists."""
         return next((i for i, node in enumerate(self.nodes) if node.id == nodeId), -1)
@@ -305,6 +344,17 @@ class Homee:
         """Returns the node with the given id or `None` if no node with the given id exists."""
         index = self.get_node_index(nodeId)
         return self.nodes[index] if index != -1 else None
+
+    def get_group_index(self, groupId: int) -> int:
+        """Returns the index of the group with the given id or -1 if no group with the given id exists."""
+        return next(
+            (i for i, group in enumerate(self.groups) if group.id == groupId), -1
+        )
+
+    def get_group_by_id(self, groupId: int) -> HomeeGroup:
+        """Returns the group with the given id or `None` if no group with the given id exists."""
+        index = self.get_group_index(groupId)
+        return self.groups[index] if index != -1 else None
 
     async def set_value(self, deviceId: int, attributeId: int, value: float):
         """Set the target value of an attribute of a device."""
