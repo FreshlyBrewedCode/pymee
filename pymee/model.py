@@ -111,6 +111,7 @@ class HomeeNode:
         self._attribute_map: dict = None
         self._remap_attributes()
         self._onChangedListeners = []
+        self.groups: List[HomeeGroup] = []
 
     @property
     def id(self) -> int:
@@ -234,49 +235,50 @@ class HomeeNode:
 class HomeeGroup:
     def __init__(self, data) -> None:
         self._data = data
+        self.nodes: List[HomeeNode] = []
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self._data["id"]
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._data["name"]
 
     @property
-    def image(self):
+    def image(self) -> str:
         return self._data["image"]
 
     @property
-    def order(self):
+    def order(self) -> int:
         return self._data["order"]
 
     @property
-    def added(self):
+    def added(self) -> int:
         return self._data["added"]
 
     @property
-    def state(self):
+    def state(self) -> int:
         return self._data["state"]
 
     @property
-    def category(self):
+    def category(self) -> int:
         return self._data["category"]
 
     @property
-    def phonetic_name(self):
+    def phonetic_name(self) -> str:
         return self._data["phonetic_name"]
 
     @property
-    def note(self):
+    def note(self) -> str:
         return self._data["note"]
 
     @property
-    def services(self):
+    def services(self) -> int:
         return self._data["services"]
 
     @property
-    def owner(self):
+    def owner(self) -> int:
         return self._data["owner"]
 
 
@@ -407,6 +409,31 @@ class HomeeSettings:
     @property
     def extensions(self) -> List[dict]:
         return self._data["extensions"]
+
+
+class HomeeRelationship:
+    def __init__(self, data):
+        self._data = data
+
+    @property
+    def id(self) -> int:
+        return self._data["id"]
+
+    @property
+    def group_id(self) -> int:
+        return self._data["group_id"]
+
+    @property
+    def node_id(self) -> int:
+        return self._data["node_id"]
+
+    @property
+    def homeegram_id(self) -> int:
+        return self._data["homeegram_id"]
+
+    @property
+    def order(self) -> int:
+        return self._data["order"]
 
 
 # JSON to Python regex:
