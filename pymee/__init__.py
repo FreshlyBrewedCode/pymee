@@ -274,24 +274,22 @@ class Homee:
         elif msgType == "attribute":
             await self._handle_attribute_change(msg["attribute"])
         elif msgType == "groups":
-            self.groups = msg["groups"]
+            for data in msg["groups"]:
+                self._update_or_create_group(data)
         elif msgType == "node":
             self._update_or_create_node(msg["node"])
         elif msgType == "nodes":
-            # TODO: call update_or_create_node for each node
-            self.nodes = msg["nodes"]
+            for data in msg["nodes"]:
+                self._update_or_create_node(data)
         elif msgType == "relationships":
             self.relationships = list(
                 map(lambda r: HomeeRelationship(r), msg["relationships"])
             )
             self._remap_relationships()
         elif msgType == "group":
-            # TODO: update_or_create_group
-            pass
+            self._update_or_create_group(msg["group"])
         elif msgType == "relationship":
-            # TODO update_or_create_relationship
-            self._remap_relationships()
-            pass
+            self._update_or_create_relationship(msg["relationship"])
         else:
             self._log(f"Unknown/Unsupported message type: {msgType}")
 
@@ -318,6 +316,26 @@ class Homee:
             existingNode._update_attributes(node_data["attributes"])
         else:
             self.nodes.append(HomeeNode(node_data))
+            self._remap_relationships()
+
+    def _update_or_create_group(self, data: dict):
+        group = self.get_group_by_id(data["id"])
+        if group is not None:
+            group._data = data
+        else:
+            self.groups.append(HomeeGroup(data))
+            self._remap_relationships()
+
+    def _update_or_create_relationship(self, data: dict):
+        relationship: HomeeRelationship = next(
+            [r for r in self.relationships if r.id == data["id"]], None
+        )
+
+        if relationship is not None:
+            relationship._data = data
+        else:
+            self.relationships.append(HomeeRelationship(data))
+        self._remap_relationships()
 
     def _remap_relationships(self):
         """Remap the relationships between nodes and groups defined by the relationships list."""
