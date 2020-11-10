@@ -111,6 +111,7 @@ class HomeeNode:
         self._attribute_map: dict = None
         self._remap_attributes()
         self._onChangedListeners = []
+        self.groups: List[HomeeGroup] = []
 
     @property
     def id(self) -> int:
@@ -229,3 +230,212 @@ class HomeeNode:
             self._attribute_map = {}
         for a in self.attributes:
             self._attribute_map[a.type] = a
+
+
+class HomeeGroup:
+    def __init__(self, data) -> None:
+        self._data = data
+        self.nodes: List[HomeeNode] = []
+
+    @property
+    def id(self) -> int:
+        return self._data["id"]
+
+    @property
+    def name(self) -> str:
+        return unquote(self._data["name"])
+
+    @property
+    def image(self) -> str:
+        return self._data["image"]
+
+    @property
+    def order(self) -> int:
+        return self._data["order"]
+
+    @property
+    def added(self) -> int:
+        return self._data["added"]
+
+    @property
+    def state(self) -> int:
+        return self._data["state"]
+
+    @property
+    def category(self) -> int:
+        return self._data["category"]
+
+    @property
+    def phonetic_name(self) -> str:
+        return unquote(self._data["phonetic_name"])
+
+    @property
+    def note(self) -> str:
+        return self._data["note"]
+
+    @property
+    def services(self) -> int:
+        return self._data["services"]
+
+    @property
+    def owner(self) -> int:
+        return self._data["owner"]
+
+
+class HomeeSettings:
+    def __init__(self, data: dict) -> None:
+        self._data = data
+
+    @property
+    def address(self) -> str:
+        return self._data["address"]
+
+    @property
+    def city(self) -> str:
+        return self._data["city"]
+
+    @property
+    def zip(self) -> str:
+        return self._data["zip"]
+
+    @property
+    def state(self) -> str:
+        return self._data["state"]
+
+    @property
+    def latitude(self) -> float:
+        return self._data["latitude"]
+
+    @property
+    def longitude(self) -> float:
+        return self._data["longitude"]
+
+    @property
+    def country(self) -> str:
+        return self._data["country"]
+
+    @property
+    def language(self) -> str:
+        return self._data["language"]
+
+    @property
+    def remote_access(self) -> int:
+        return self._data["remote_access"]
+
+    @property
+    def beta(self) -> int:
+        return self._data["beta"]
+
+    @property
+    def webhooks_key(self) -> str:
+        return self._data["webhooks_key"]
+
+    @property
+    def automatic_location_detection(self) -> int:
+        return self._data["automatic_location_detection"]
+
+    @property
+    def polling_interval(self) -> float:
+        return self._data["polling_interval"]
+
+    @property
+    def timezone(self) -> str:
+        return self._data["timezone"]
+
+    @property
+    def enable_analytics(self) -> int:
+        return self._data["enable_analytics"]
+
+    @property
+    def homee_name(self) -> str:
+        return self._data["homee_name"]
+
+    @property
+    def LastMissingCubeNotification(self) -> str:
+        return self._data["LastMissingCubeNotification"]
+
+    @property
+    def local_ssl_enabled(self) -> bool:
+        return self._data["local_ssl_enabled"]
+
+    @property
+    def wlan_enabled(self) -> int:
+        return self._data["wlan_enabled"]
+
+    @property
+    def wlan_ssid(self) -> str:
+        return self._data["wlan_ssid"]
+
+    @property
+    def wlan_mode(self) -> int:
+        return self._data["wlan_mode"]
+
+    @property
+    def internet_access(self) -> bool:
+        return self._data["internet_access"]
+
+    @property
+    def lan_enabled(self) -> int:
+        return self._data["lan_enabled"]
+
+    @property
+    def lan_ip_address(self) -> str:
+        return self._data["lan_ip_address"]
+
+    @property
+    def available_ssids(self) -> List[str]:
+        return self._data["available_ssids"]
+
+    @property
+    def time(self) -> int:
+        return self._data["time"]
+
+    @property
+    def civil_time(self) -> str:
+        return self._data["civil_time"]
+
+    @property
+    def version(self) -> str:
+        return self._data["version"]
+
+    @property
+    def uid(self) -> str:
+        return self._data["uid"]
+
+    @property
+    def cubes(self) -> List[dict]:
+        return self._data["cubes"]
+
+    @property
+    def extensions(self) -> List[dict]:
+        return self._data["extensions"]
+
+
+class HomeeRelationship:
+    def __init__(self, data):
+        self._data = data
+
+    @property
+    def id(self) -> int:
+        return self._data["id"]
+
+    @property
+    def group_id(self) -> int:
+        return self._data["group_id"]
+
+    @property
+    def node_id(self) -> int:
+        return self._data["node_id"]
+
+    @property
+    def homeegram_id(self) -> int:
+        return self._data["homeegram_id"]
+
+    @property
+    def order(self) -> int:
+        return self._data["order"]
+
+
+# JSON to Python regex:
+# Match: "([^"]*)":[^,]*,
+# Replace: @property\ndef $1(self):\n\treturn self._data["$1"]\n
