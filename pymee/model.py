@@ -243,7 +243,7 @@ class HomeeGroup:
 
     @property
     def name(self) -> str:
-        return self._data["name"]
+        return unquote(self._data["name"])
 
     @property
     def image(self) -> str:
@@ -267,7 +267,7 @@ class HomeeGroup:
 
     @property
     def phonetic_name(self) -> str:
-        return self._data["phonetic_name"]
+        return unquote(self._data["phonetic_name"])
 
     @property
     def note(self) -> str:
