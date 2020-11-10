@@ -2,6 +2,20 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.0 (2020-11-10)
+### Feature
+* Handle `groups`, `nodes`, `group` and `relationship` message types ([`fddac28`](https://github.com/FreshlyBrewedCode/pymee/commit/fddac2831e0185464d2b9991ad04cc52dd28ef5b))
+* Manage groups, settings and relationships using model ([`5650375`](https://github.com/FreshlyBrewedCode/pymee/commit/56503756a0ccd006aa57b0bebdbee5d6764173b9))
+* Add `HomeeRelationship` model ([`21f2db0`](https://github.com/FreshlyBrewedCode/pymee/commit/21f2db01267bc917a2af568aa109eafa55bea071))
+* Add `HomeeOptions` model ([`45efe54`](https://github.com/FreshlyBrewedCode/pymee/commit/45efe54709d2849f56d59fd26d8fb0a2a19f98e4))
+* Add `HomeeGroup` model ([`9d3759f`](https://github.com/FreshlyBrewedCode/pymee/commit/9d3759fde70dfe8e9beea83e92f5437e90ea183e))
+
+### Fix
+* Decode strings in `HomeeGroup` ([`9db565e`](https://github.com/FreshlyBrewedCode/pymee/commit/9db565e7268f513d4ffd8b974af5116e3da9e6a7))
+
+### Documentation
+* Mention Home Assistant homee integration in README ([`d44c6b6`](https://github.com/FreshlyBrewedCode/pymee/commit/d44c6b6caa7ee82a76dff387805f5b7e7294b549))
+
 ## v1.1.2 (2020-11-01)
 ### Fix
 * Fix exception handling bug that causes connection to close instantly ([`050d1d0`](https://github.com/FreshlyBrewedCode/pymee/commit/050d1d04c2b8bca243de1c8d50886ecce580aa67))
