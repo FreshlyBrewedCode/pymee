@@ -1,7 +1,7 @@
 # pymee
-![PyPI](https://img.shields.io/pypi/v/pymee)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pymee?color=blue&logo=python&logoColor=yellow)
-![GitHub last commit](https://img.shields.io/github/last-commit/FreshlyBrewedCode/pymee)
+![PyPI](https://img.shields.io/pypi/v/pymee?style=for-the-badge)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pymee?color=blue&logo=python&logoColor=yellow&style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/FreshlyBrewedCode/pymee?style=for-the-badge)
 
 > pymee is the backbone of the [Home Assistant homee integration](https://github.com/FreshlyBrewedCode/hacs-homee).
 
