@@ -25,6 +25,7 @@ class Homee:
         user: str,
         password: str,
         device: str = "pymee",
+        pingInterval: int = 30,
         reconnectInterval: int = 5000,
         reconnect: bool = True,
         maxRetries: int = 5,
@@ -36,6 +37,7 @@ class Homee:
         self.password = password
 
         self.device = device
+        self.pingInterval = pingInterval
         self.shouldReconnect = reconnect
         self.reconnectInterval = reconnectInterval
         self.maxRetries = maxRetries
@@ -143,6 +145,10 @@ class Homee:
                 subprotocols=["v2"],
             ) as ws:
                 await self._ws_on_open()
+                
+                # Start Ping
+                asyncio.create_task(self._ws_ping_handler(ws))
+                
                 while (not self.shouldClose) and self.connected:
                     try:
                         receive_task = asyncio.ensure_future(
@@ -195,7 +201,16 @@ class Homee:
         except Exception as e:
             if not self.shouldClose:
                 raise e
+    
+    async def _ws_ping_handler(self, ws: websockets.WebSocketClientProtocol):
+        if self.pingInterval <= 0:
+            return
 
+        while self.connected and not self.shouldClose:
+            await ws.ping()
+            self._log("PING!")     
+            await asyncio.sleep(self.pingInterval)
+    
     async def _ws_on_open(self):
         """Websocket on_open callback."""
 
