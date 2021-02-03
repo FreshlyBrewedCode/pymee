@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.0 (2021-02-03)
+### Feature
+* Enable automatic reconnection attempts ([`ee3fb00`](https://github.com/FreshlyBrewedCode/pymee/commit/ee3fb001067bb3ca90c1221584d1893cc7ebe085))
+
 ## v1.3.0 (2021-02-03)
 ### Feature
 * Add manual websocket ping handler ([`773caa0`](https://github.com/FreshlyBrewedCode/pymee/commit/773caa0451d6b9353a1dd97ce8a37ad2e609a127))
