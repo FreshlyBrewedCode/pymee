@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.0 (2021-02-03)
+### Feature
+* Add manual websocket ping handler ([`773caa0`](https://github.com/FreshlyBrewedCode/pymee/commit/773caa0451d6b9353a1dd97ce8a37ad2e609a127))
+
+### Documentation
+* Use large badges in README ([`370006b`](https://github.com/FreshlyBrewedCode/pymee/commit/370006b58fb7a793ba130b8f5998b6c941c41bba))
+
 ## v1.2.0 (2020-11-10)
 ### Feature
 * Handle `groups`, `nodes`, `group` and `relationship` message types ([`fddac28`](https://github.com/FreshlyBrewedCode/pymee/commit/fddac2831e0185464d2b9991ad04cc52dd28ef5b))
