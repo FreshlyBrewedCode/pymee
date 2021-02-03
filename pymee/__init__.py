@@ -26,7 +26,7 @@ class Homee:
         password: str,
         device: str = "pymee",
         pingInterval: int = 30,
-        reconnectInterval: int = 5000,
+        reconnectInterval: int = 5,
         reconnect: bool = True,
         maxRetries: int = 5,
         loop: asyncio.AbstractEventLoop = None,
@@ -235,8 +235,8 @@ class Homee:
         self._disconnected_event.set()
 
         await self.on_disconnected()
-        # if self.shouldReconnect and not self.shouldClose:
-        # self.reconnect()
+        if self.shouldReconnect and not self.shouldClose:
+            await self.reconnect()
 
     async def _ws_on_error(self, error):
         """Websocket on_error callback."""
@@ -253,8 +253,10 @@ class Homee:
         await self._message_queue.put(msg)
 
     async def reconnect(self):
-        """TODO"""
-
+        """Start a reconnection attempt."""
+        
+        self._log(f"Attempting to reconnect in {self.reconnectInterval * self.retries} seconds...")
+        
         await asyncio.sleep(self.reconnectInterval * self.retries)
         await self.open_ws()
 
