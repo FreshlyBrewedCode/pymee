@@ -61,6 +61,11 @@ class Homee:
     async def get_access_token(self):
         """Asynchronously attempts to get an access token from the homee host using username and password."""
 
+        
+        # Check if current token is still valid
+        if self.token != None and self.expires > datetime.now().timestamp():
+            return self.token
+        
         client = aiohttp.ClientSession()
         auth = BasicAuth(
             self.user, hashlib.sha512(self.password.encode("utf-8")).hexdigest()
@@ -75,8 +80,6 @@ class Homee:
             "device_app": DeviceApp.HOMEE,
         }
 
-        if self.token != None and self.expires > datetime.now().timestamp():
-            return self.token
 
         if self.retries > 0:
             self.reconnect()
