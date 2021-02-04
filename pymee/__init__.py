@@ -80,14 +80,6 @@ class Homee:
             "device_app": DeviceApp.HOMEE,
         }
 
-
-        if self.retries > 0:
-            self.reconnect()
-
-        self.retries += 1
-        if self.retries > self.maxRetries:
-            raise Exception("max retries reached")
-
         try:
             req = await client.post(
                 url, auth=auth, data=data, headers=headers, timeout=5
