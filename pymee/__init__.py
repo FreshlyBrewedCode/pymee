@@ -176,6 +176,7 @@ class Homee:
 
                     except websockets.exceptions.ConnectionClosed as e:
                         self.connected = False
+                        ws.abort_pings()
                         await self.on_disconnected()
         except Exception as e:
             # TODO retry logic
@@ -208,7 +209,7 @@ class Homee:
         if self.pingInterval <= 0:
             return
 
-        while self.connected and not self.shouldClose:
+        while self.connected and not self.shouldClose and ws.open:
             await ws.ping()
             self._log("PING!")     
             await asyncio.sleep(self.pingInterval)
