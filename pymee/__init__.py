@@ -113,8 +113,15 @@ class Homee:
         try:
             await self.get_access_token()
         except:
-            raise AuthenticationFailedException
-
+            # Attempt to reconnect if there was a timeout during authentication
+            if self.retries < self.maxRetries:
+                self.retries += 1
+                await self.reconnect()
+                return
+            else:
+                await self.on_max_retries()
+                raise AuthenticationFailedException
+        
         await self.open_ws()
 
     def start(self):
