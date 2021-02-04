@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v1.5.0 (2021-02-04)
+### Feature
+* Add working reconnection logic during authentication ([`235ea6f`](https://github.com/FreshlyBrewedCode/pymee/commit/235ea6f33b6f87536c486d794e274e4b8a22dfeb))
+
+### Fix
+* Improve ping handler shutdown ([`5d69574`](https://github.com/FreshlyBrewedCode/pymee/commit/5d695743615ea7cffaf143939afb4b693b692f88))
+* Fix syntax and logic errors during reconnection ([`b199f85`](https://github.com/FreshlyBrewedCode/pymee/commit/b199f85ad1f76f1bd1fe38033ee3d5c7b06f7dc2))
+* Handle all exception types during authentication ([`0da9005`](https://github.com/FreshlyBrewedCode/pymee/commit/0da9005bbd6b109c2dacfaec8610236eee1de012))
+* Remove legacy reconnection logic in `get_access_token` ([`52dd77a`](https://github.com/FreshlyBrewedCode/pymee/commit/52dd77ab38d95f3ed154947926fcd981335873f5))
+* Fix unclosed client session error during authentication ([`d7b5ca5`](https://github.com/FreshlyBrewedCode/pymee/commit/d7b5ca5b96b6da14e9e34764c233e118135de6b5))
+
 ## v1.4.0 (2021-02-03)
 ### Feature
 * Enable automatic reconnection attempts ([`ee3fb00`](https://github.com/FreshlyBrewedCode/pymee/commit/ee3fb001067bb3ca90c1221584d1893cc7ebe085))
