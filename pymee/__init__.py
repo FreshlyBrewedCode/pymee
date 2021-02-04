@@ -84,7 +84,7 @@ class Homee:
             req = await client.post(
                 url, auth=auth, data=data, headers=headers, timeout=5
             )
-        except asyncio.TimeoutError as e:
+        except Exception as e:
             await client.close()
             raise e
 
