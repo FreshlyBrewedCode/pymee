@@ -134,11 +134,10 @@ class Homee:
         self._log("Opening websocket...")
 
         if self.retries > 0:
-            self.on_reconnect()
-
-        self.retries += 1
+            await self.on_reconnect()
+        
         if self.retries > self.maxRetries:
-            self.on_max_retries()
+            await self.on_max_retries()
             return
 
         try:
@@ -182,7 +181,8 @@ class Homee:
             # TODO retry logic
             await self._ws_on_error(e)
             # raise e
-
+        
+        self.retries += 1
         await self._ws_on_close()
 
     async def _ws_receive_handler(self, ws: websockets.WebSocketClientProtocol):
@@ -219,9 +219,10 @@ class Homee:
         self._log("Connection to websocket successfull")
 
         self.connected = True
-        self.retries = 1
-
+        
         await self.on_connected()
+        self.retries = 0
+
         await self.send("GET:all")
 
     async def _ws_on_message(self, msg: str):
@@ -260,7 +261,7 @@ class Homee:
         self._log(f"Attempting to reconnect in {self.reconnectInterval * self.retries} seconds...")
         
         await asyncio.sleep(self.reconnectInterval * self.retries)
-        await self.open_ws()
+        await self.run()
 
     def disconnect(self):
         """Disconnect from homee by closing the websocket connection."""
@@ -427,10 +428,9 @@ class Homee:
         return self._disconnected_event.wait()
 
     def on_reconnect(self):
-        """TODO"""
-        pass
+        """Called right before a reconnection attempt is started."""
 
-    def on_max_retries(self):
+    async def on_max_retries(self):
         """Called if the maximum amount of retries was reached."""
 
     async def on_connected(self):
