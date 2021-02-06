@@ -286,13 +286,26 @@ class Homee:
 
         if msgType == "all":
             self.settings = HomeeSettings(msg["all"]["settings"])
-            self.nodes = list(map(lambda n: HomeeNode(n), msg["all"]["nodes"]))
-            self.groups = list(map(lambda g: HomeeGroup(g), msg["all"]["groups"]))
-            self.relationships = list(
-                map(lambda r: HomeeRelationship(r), msg["all"]["relationships"])
-            )
+
+            # Create / Update nodes
+            if len(self.nodes) <= 0:
+                self.nodes = list(map(lambda n: HomeeNode(n), msg["all"]["nodes"]))
+            else:
+                for node_data in msg["all"]["nodes"]:
+                    self._update_or_create_node(node_data)
+
+            # Update / Create groups
+            if len(self.groups) <= 0:
+                self.groups = list(map(lambda g: HomeeGroup(g), msg["all"]["groups"]))
+            else:
+                for group_data in msg["all"]["groups"]:
+                    self._update_or_create_group(group_data)
+
+            self._update_or_create_relationships(msg["all"]["relationships"])
+
             self._remap_relationships()
             self._connected_event.set()
+
         elif msgType == "attribute":
             await self._handle_attribute_change(msg["attribute"])
         elif msgType == "groups":
@@ -304,9 +317,7 @@ class Homee:
             for data in msg["nodes"]:
                 self._update_or_create_node(data)
         elif msgType == "relationships":
-            self.relationships = list(
-                map(lambda r: HomeeRelationship(r), msg["relationships"])
-            )
+            self._update_or_create_relationships(msg["relationships"])
             self._remap_relationships()
         elif msgType == "group":
             self._update_or_create_group(msg["group"])
@@ -358,6 +369,13 @@ class Homee:
         else:
             self.relationships.append(HomeeRelationship(data))
         self._remap_relationships()
+
+    def _update_or_create_relationships(self, data: dict):
+        if len(self.relationships) <= 0:
+            self.relationships = list(map(lambda r: HomeeRelationship(r), data))
+        else:
+            for relationship_data in data:
+                self._update_or_create_relationship(relationship_data)
 
     def _remap_relationships(self):
         """Remap the relationships between nodes and groups defined by the relationships list."""
