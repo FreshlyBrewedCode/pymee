@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.5.1 (2021-02-06)
+### Fix
+* Reuse existing node, group and relationship instances after reconnect ([`ead401b`](https://github.com/FreshlyBrewedCode/pymee/commit/ead401b484e30f7030059bda8538f3436d403411))
+
 ## v1.5.0 (2021-02-04)
 ### Feature
 * Add working reconnection logic during authentication ([`235ea6f`](https://github.com/FreshlyBrewedCode/pymee/commit/235ea6f33b6f87536c486d794e274e4b8a22dfeb))
