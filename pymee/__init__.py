@@ -61,11 +61,10 @@ class Homee:
     async def get_access_token(self):
         """Asynchronously attempts to get an access token from the homee host using username and password."""
 
-        
         # Check if current token is still valid
         if self.token != None and self.expires > datetime.now().timestamp():
             return self.token
-        
+
         client = aiohttp.ClientSession()
         auth = BasicAuth(
             self.user, hashlib.sha512(self.password.encode("utf-8")).hexdigest()
@@ -121,7 +120,7 @@ class Homee:
             else:
                 await self.on_max_retries()
                 raise AuthenticationFailedException
-        
+
         await self.open_ws()
 
     def start(self):
@@ -135,7 +134,7 @@ class Homee:
 
         if self.retries > 0:
             await self.on_reconnect()
-        
+
         if self.retries > self.maxRetries:
             await self.on_max_retries()
             return
@@ -146,10 +145,10 @@ class Homee:
                 subprotocols=["v2"],
             ) as ws:
                 await self._ws_on_open()
-                
+
                 # Start Ping
                 asyncio.create_task(self._ws_ping_handler(ws))
-                
+
                 while (not self.shouldClose) and self.connected:
                     try:
                         receive_task = asyncio.ensure_future(
@@ -182,7 +181,7 @@ class Homee:
             # TODO retry logic
             await self._ws_on_error(e)
             # raise e
-        
+
         self.retries += 1
         await self._ws_on_close()
 
@@ -204,23 +203,23 @@ class Homee:
         except Exception as e:
             if not self.shouldClose:
                 raise e
-    
+
     async def _ws_ping_handler(self, ws: websockets.WebSocketClientProtocol):
         if self.pingInterval <= 0:
             return
 
         while self.connected and not self.shouldClose and ws.open:
             await ws.ping()
-            self._log("PING!")     
+            self._log("PING!")
             await asyncio.sleep(self.pingInterval)
-    
+
     async def _ws_on_open(self):
         """Websocket on_open callback."""
 
         self._log("Connection to websocket successfull")
 
         self.connected = True
-        
+
         await self.on_connected()
         self.retries = 0
 
@@ -258,9 +257,11 @@ class Homee:
 
     async def reconnect(self):
         """Start a reconnection attempt."""
-        
-        self._log(f"Attempting to reconnect in {self.reconnectInterval * self.retries} seconds...")
-        
+
+        self._log(
+            f"Attempting to reconnect in {self.reconnectInterval * self.retries} seconds..."
+        )
+
         await asyncio.sleep(self.reconnectInterval * self.retries)
         await self.run()
 
