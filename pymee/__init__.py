@@ -447,7 +447,7 @@ class Homee:
         """Returns a coroutine that runs until the connection has been closed."""
         return self._disconnected_event.wait()
 
-    def on_reconnect(self):
+    async def on_reconnect(self):
         """Called right before a reconnection attempt is started."""
 
     async def on_max_retries(self):
