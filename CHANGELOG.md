@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.5.3 (2021-02-08)
+### Fix
+* Implement reconnects iteratively to avoid recursion problems ([`52c2a6b`](https://github.com/FreshlyBrewedCode/pymee/commit/52c2a6b37cd30a9c3c939c110744222187663d1e))
+
 ## v1.5.2 (2021-02-07)
 ### Fix
 * Turn `on_reconnect` callback into coroutine ([`4fded37`](https://github.com/FreshlyBrewedCode/pymee/commit/4fded37bf7502f7e3d95fb9625506f990585e67d))
