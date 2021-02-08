@@ -178,9 +178,7 @@ class Homee:
                         ws.abort_pings()
                         await self.on_disconnected()
         except Exception as e:
-            # TODO retry logic
             await self._ws_on_error(e)
-            # raise e
 
         self.retries += 1
         await self._ws_on_close()
