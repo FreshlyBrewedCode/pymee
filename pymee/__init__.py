@@ -108,20 +108,32 @@ class Homee:
         """Connects to homee after acquiring an access token and runs until the connection is closed. Should be used in combination with asyncio.create_task."""
 
         self.shouldClose = False
+        initial_connect = True
 
-        try:
-            await self.get_access_token()
-        except:
-            # Attempt to reconnect if there was a timeout during authentication
-            if self.retries < self.maxRetries:
+        # Reconnect loop to avoid recursive reconnects
+        while initial_connect or (
+            not self.shouldClose
+            and self.shouldReconnect
+            and self.retries < self.maxRetries
+        ):
+            initial_connect = False
+
+            # Sleep after reconnect
+            if self.retries > 0:
+                await asyncio.sleep(self.reconnectInterval * self.retries)
+
+            try:
+                await self.get_access_token()
+            except:
+                # Reconnect
                 self.retries += 1
-                await self.reconnect()
-                return
-            else:
-                await self.on_max_retries()
-                raise AuthenticationFailedException
+                continue
 
-        await self.open_ws()
+            await self.open_ws()
+
+        # Handle max retries
+        if self.retries >= self.maxRetries:
+            await self.on_max_retries()
 
     def start(self):
         """Wraps run() with asyncio.create_task() and returns the resulting task."""
@@ -134,10 +146,6 @@ class Homee:
 
         if self.retries > 0:
             await self.on_reconnect()
-
-        if self.retries > self.maxRetries:
-            await self.on_max_retries()
-            return
 
         try:
             async with websockets.connect(
@@ -236,8 +244,6 @@ class Homee:
         self._disconnected_event.set()
 
         await self.on_disconnected()
-        if self.shouldReconnect and not self.shouldClose:
-            await self.reconnect()
 
     async def _ws_on_error(self, error):
         """Websocket on_error callback."""
