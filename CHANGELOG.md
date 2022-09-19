@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.5.4 (2022-09-19)
+### Fix
+* Fixed loop parameter in asyncio + tested ([#1](https://github.com/FreshlyBrewedCode/pymee/issues/1)) ([`1041e56`](https://github.com/FreshlyBrewedCode/pymee/commit/1041e56f066a6a3a9c90b82e4886fdc222db4bb5))
+
 ## v1.5.3 (2021-02-08)
 ### Fix
 * Implement reconnects iteratively to avoid recursion problems ([`52c2a6b`](https://github.com/FreshlyBrewedCode/pymee/commit/52c2a6b37cd30a9c3c939c110744222187663d1e))
