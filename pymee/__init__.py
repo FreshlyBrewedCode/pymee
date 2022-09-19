@@ -54,9 +54,9 @@ class Homee:
         self.retries = 0
         self.shouldClose = False
 
-        self._message_queue = asyncio.Queue(loop=loop)
-        self._connected_event = asyncio.Event(loop=loop)
-        self._disconnected_event = asyncio.Event(loop=loop)
+        self._message_queue = asyncio.Queue()
+        self._connected_event = asyncio.Event()
+        self._disconnected_event = asyncio.Event()
 
     async def get_access_token(self):
         """Asynchronously attempts to get an access token from the homee host using username and password."""
