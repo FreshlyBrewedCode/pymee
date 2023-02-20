@@ -2,10 +2,6 @@
 
 <!--next-version-placeholder-->
 
-## v1.5.5 (2023-02-18)
-### Fix
-* Added more Attributes
-
 ## v1.5.4 (2022-09-19)
 ### Fix
 * Fixed loop parameter in asyncio + tested ([#1](https://github.com/FreshlyBrewedCode/pymee/issues/1)) ([`1041e56`](https://github.com/FreshlyBrewedCode/pymee/commit/1041e56f066a6a3a9c90b82e4886fdc222db4bb5))
