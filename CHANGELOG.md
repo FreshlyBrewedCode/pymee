@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.7.0 (2023-05-05)
+### Feature
+* Change Logging to use nemd logger ([#3](https://github.com/FreshlyBrewedCode/pymee/issues/3)) ([`40f32c4`](https://github.com/FreshlyBrewedCode/pymee/commit/40f32c462d7a9cec7eef590e4bb77046527213a4))
+
 ## v1.6.0 (2023-02-20)
 ### Feature
 * Add more constants to allow additional devices / profiles ([#2](https://github.com/FreshlyBrewedCode/pymee/issues/2)) ([`2914835`](https://github.com/FreshlyBrewedCode/pymee/commit/29148354189955caa861704fdf1f875752ae6e80))
