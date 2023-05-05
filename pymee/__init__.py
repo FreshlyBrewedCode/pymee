@@ -17,6 +17,8 @@ from .model import (
 import re
 import logging
 
+_LOGGER = logging.getLogger(__name__)
+
 
 class Homee:
     def __init__(
@@ -31,7 +33,6 @@ class Homee:
         maxRetries: int = 5,
         loop: asyncio.AbstractEventLoop = None,
     ) -> None:
-
         self.host = host
         self.user = user
         self.password = password
@@ -142,7 +143,7 @@ class Homee:
     async def open_ws(self):
         """Opens the websocket connection assuming an access token was already received. Runs until connection is closed again."""
 
-        self._log("Opening websocket...")
+        _LOGGER.info("Opening websocket...")
 
         if self.retries > 0:
             await self.on_reconnect()
@@ -216,13 +217,13 @@ class Homee:
 
         while self.connected and not self.shouldClose and ws.open:
             await ws.ping()
-            self._log("PING!")
+            _LOGGER.debug("PING!")
             await asyncio.sleep(self.pingInterval)
 
     async def _ws_on_open(self):
         """Websocket on_open callback."""
 
-        self._log("Connection to websocket successfull")
+        _LOGGER.info("Connection to websocket successfull")
 
         self.connected = True
 
@@ -248,7 +249,7 @@ class Homee:
     async def _ws_on_error(self, error):
         """Websocket on_error callback."""
 
-        self._log(f"An error occurred: {error}")
+        _LOGGER.error(f"An error occurred: {error}")
         await self.on_error(error)
 
     async def send(self, msg: str):
@@ -262,7 +263,7 @@ class Homee:
     async def reconnect(self):
         """Start a reconnection attempt."""
 
-        self._log(
+        _LOGGER.info(
             f"Attempting to reconnect in {self.reconnectInterval * self.retries} seconds..."
         )
 
@@ -282,11 +283,11 @@ class Homee:
         try:
             msgType = list(msg)[0]
         except:
-            self._log(f"Invalid message: {msg}")
+            _LOGGER.warn(f"Invalid message: {msg}")
             await self.on_error()
             return
 
-        self._log(msg)
+        _LOGGER.debug(msg)
 
         if msgType == "all":
             self.settings = HomeeSettings(msg["all"]["settings"])
@@ -328,14 +329,14 @@ class Homee:
         elif msgType == "relationship":
             self._update_or_create_relationship(msg["relationship"])
         else:
-            self._log(f"Unknown/Unsupported message type: {msgType}")
+            _LOGGER.info(f"Unknown/Unsupported message type: {msgType}")
 
         await self.on_message(msg)
 
     async def _handle_attribute_change(self, attribute_data: dict):
         """Internal handleling of an attribute changed message."""
 
-        self._log(f"Updating attribute {attribute_data['id']}")
+        _LOGGER.info(f"Updating attribute {attribute_data['id']}")
 
         # try:
         attrNodeId = attribute_data["node_id"]
@@ -421,7 +422,9 @@ class Homee:
     async def set_value(self, deviceId: int, attributeId: int, value: float):
         """Set the target value of an attribute of a device."""
 
-        self._log(f"Set value: Device: {deviceId} Attribute: {attributeId} To: {value}")
+        _LOGGER.info(
+            f"Set value: Device: {deviceId} Attribute: {attributeId} To: {value}"
+        )
         await self.send(
             f"PUT:/nodes/{deviceId}/attributes/{attributeId}?target_value={value}"
         )
@@ -444,7 +447,7 @@ class Homee:
         return f"ws://{self.host}:7681"
 
     def wait_until_connected(self):
-        """"Returns a coroutine that runs until a connection has been established and the initial data has been received."""
+        """ "Returns a coroutine that runs until a connection has been established and the initial data has been received."""
         return self._connected_event.wait()
 
     def wait_until_disconnected(self):
@@ -471,9 +474,6 @@ class Homee:
 
     async def on_attribute_updated(self, attribute_data: dict, node: HomeeNode):
         """Called when an 'attribute' message was received and an attribute was updated. Contains the parsed json attribute data and the corresponding node instance."""
-
-    def _log(self, msg: str):
-        logging.debug(msg)
 
 
 class HomeeException(Exception):
