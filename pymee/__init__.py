@@ -184,7 +184,10 @@ class Homee:
 
                     except websockets.exceptions.ConnectionClosed as e:
                         self.connected = False
-                        ws.abort_pings()
+                        try:
+                            ws.abort_pings()
+                        except Exception as e:
+                            await self._ws_on_error(e)
                         await self.on_disconnected()
         except Exception as e:
             await self._ws_on_error(e)
