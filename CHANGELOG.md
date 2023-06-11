@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.7.1 (2023-06-11)
+
+### Fix
+
+* Fix failure to reconnect on remote disconnect ([#4](https://github.com/FreshlyBrewedCode/pymee/issues/4)) ([`af09a42`](https://github.com/FreshlyBrewedCode/pymee/commit/af09a42dd91c6b6deffbfc30532ff52d57b00537))
+
 ## v1.7.0 (2023-05-05)
 ### Feature
 * Change Logging to use nemd logger ([#3](https://github.com/FreshlyBrewedCode/pymee/issues/3)) ([`40f32c4`](https://github.com/FreshlyBrewedCode/pymee/commit/40f32c462d7a9cec7eef590e4bb77046527213a4))
