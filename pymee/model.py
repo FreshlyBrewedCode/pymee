@@ -2,6 +2,58 @@ from typing import Callable, List
 from urllib.parse import unquote
 
 
+class HomeeAttributeOptions:
+    def __init__(self, attributeOptions):
+        self._data = attributeOptions
+
+    @property
+    def can_observe(self) -> list:
+        """List (int) of attribute types that this attribute can observe."""
+        if "can_observe" in self._data:
+            return self._data["can_observe"]
+        else:
+            return []
+
+    @property
+    def observes(self) -> list:
+        """List (int) of attribute ids that this attribute observes."""
+        if "observes" in self._data:
+            return self._data["observes"]
+        else:
+            return []
+
+    @property
+    def observed_by(self) -> list:
+        """List (int) of attribute ids that observe this attribute."""
+        if "observed_by" in self._data:
+            return self._data["observed_by"]
+        else:
+            return []
+
+    @property
+    def automations(self) -> list:
+        """List (str) of automations for thie attribute."""
+        if "automations" in self._data:
+            return self._data["automations"]
+        else:
+            return []
+
+    @property
+    def history(self) -> List[dict]:
+        """History data for the attribute. {'day': int, 'week': int, 'month': int, 'stepped': bool}"""
+        if "history" in self._data:
+            return self._data["history"]
+        else:
+            return {}
+
+    @property
+    def reverse_control_ui(self) -> bool:
+        """Do up/down controls work in opposite direction?"""
+        if "reverse_control_ui" in self._data:
+            return self._data["reverse_control_ui"]
+        else:
+            return False
+
 class HomeeAttribute:
     def __init__(self, data: dict) -> None:
         self._data = data
@@ -100,6 +152,11 @@ class HomeeAttribute:
     def data(self) -> str:
         """The data string of the attribute. Note that the data may be uri encoded."""
         return self._data["data"]
+
+    @property
+    def options(self) -> HomeeAttributeOptions:
+        """The options collection of the attribute. Optional, not on every attribute."""
+        return HomeeAttributeOptions(self._data["options"])
 
 
 class HomeeNode:
