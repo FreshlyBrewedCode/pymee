@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.8.0 (2023-06-23)
+
+### Feature
+
+* Add attribute options ([#6](https://github.com/FreshlyBrewedCode/pymee/issues/6)) ([`81f339a`](https://github.com/FreshlyBrewedCode/pymee/commit/81f339aafd36a838e6376066775f9753d10b397e))
+
 ## v1.7.1 (2023-06-11)
 
 ### Fix
