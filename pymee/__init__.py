@@ -8,7 +8,6 @@ import websockets
 from datetime import datetime
 from .const import DeviceApp, DeviceOS, DeviceType
 from .model import (
-    HomeeAttribute,
     HomeeGroup,
     HomeeNode,
     HomeeRelationship,
@@ -219,8 +218,11 @@ class Homee:
             return
 
         while self.connected and not self.shouldClose and ws.open:
-            await ws.ping()
-            _LOGGER.debug("PING!")
+            _LOGGER.info("PING!")
+            try:
+                await ws.ping()
+            except websockets.exceptions.ConnectionClosed as e:
+                await self.on_disconnected()
             await asyncio.sleep(self.pingInterval)
 
     async def _ws_on_open(self):
@@ -279,7 +281,7 @@ class Homee:
         self.shouldClose = True
 
     async def _handle_message(self, msg: dict):
-        """Internal handleing of incoming homee messages."""
+        """Internal handling of incoming homee messages."""
 
         msgType = None
 
@@ -432,6 +434,11 @@ class Homee:
             f"PUT:/nodes/{deviceId}/attributes/{attributeId}?target_value={value}"
         )
 
+    async def get_attribute(self, deviceId: int, attributeId: int):
+        """Get the current state of an attribute"""
+        _LOGGER.info(f'request attribute {attributeId} of device {deviceId}')
+        await self.send(f"GET:/nodes/{deviceId}/attributes/{attributeId}")
+
     async def play_homeegram(self, homeegramId: int):
         """Invoke a homeegram."""
 
@@ -450,7 +457,7 @@ class Homee:
         return f"ws://{self.host}:7681"
 
     def wait_until_connected(self):
-        """ "Returns a coroutine that runs until a connection has been established and the initial data has been received."""
+        """Returns a coroutine that runs until a connection has been established and the initial data has been received."""
         return self._connected_event.wait()
 
     def wait_until_disconnected(self):
@@ -468,6 +475,9 @@ class Homee:
 
     async def on_disconnected(self):
         """Called after the websocket connection has been closed."""
+        if not self.shouldClose:
+            _LOGGER.warn("Disconnected, trying to reconnect.")
+            self.reconnect()
 
     async def on_error(self, error: str = None):
         """Called after an error has occurred."""
