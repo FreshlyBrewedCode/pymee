@@ -2,6 +2,17 @@
 
 
 
+## v1.10.0 (2023-10-24)
+
+### Feature
+
+* feat: change get_attribute to update_attribute and add update_node (#9)
+
+* add function to get an update for an attribute
+
+* Change get_attribute to update_attribute and add update_node ([`750bfef`](https://github.com/FreshlyBrewedCode/pymee/commit/750bfefd32b9f96d0270143bb2de7bf345295cf9))
+
+
 ## v1.9.0 (2023-10-24)
 
 ### Feature
