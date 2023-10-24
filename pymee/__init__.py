@@ -433,11 +433,16 @@ class Homee:
         await self.send(
             f"PUT:/nodes/{deviceId}/attributes/{attributeId}?target_value={value}"
         )
+   
+    async def update_node(self, nodeId: int):
+        """Request current data for a node."""
+        _LOGGER.info(f"Request current data for node {nodeId}")
+        await self.send(f"GET:/nodes/{nodeId}/")
 
-    async def get_attribute(self, deviceId: int, attributeId: int):
-        """Get the current state of an attribute"""
-        _LOGGER.info(f'request attribute {attributeId} of device {deviceId}')
-        await self.send(f"GET:/nodes/{deviceId}/attributes/{attributeId}")
+    async def update_attribute(self, nodeId: int, attributeId: int):
+        """Request current data for an attribute"""
+        _LOGGER.info(f'request current data for attribute {attributeId} of device {nodeId}')
+        await self.send(f"GET:/nodes/{nodeId}/attributes/{attributeId}")
 
     async def play_homeegram(self, homeegramId: int):
         """Invoke a homeegram."""
