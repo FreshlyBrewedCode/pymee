@@ -1,122 +1,272 @@
-# Changelog
+# CHANGELOG
 
-<!--next-version-placeholder-->
+
+
+## v1.9.0 (2023-10-24)
+
+### Feature
+
+* feat: add function to get an update for an attribute (#8) ([`298b5af`](https://github.com/FreshlyBrewedCode/pymee/commit/298b5afa1079ba0e3db5644699c33c3680410646))
+
 
 ## v1.8.0 (2023-06-23)
 
 ### Feature
 
-* Add attribute options ([#6](https://github.com/FreshlyBrewedCode/pymee/issues/6)) ([`81f339a`](https://github.com/FreshlyBrewedCode/pymee/commit/81f339aafd36a838e6376066775f9753d10b397e))
+* feat: add attribute options (#6)
+
+Homee Attributes can have options, that will be exposed with this patch.
+Options that are not present will have empty values. ([`81f339a`](https://github.com/FreshlyBrewedCode/pymee/commit/81f339aafd36a838e6376066775f9753d10b397e))
+
 
 ## v1.7.1 (2023-06-11)
 
 ### Fix
 
-* Fix failure to reconnect on remote disconnect ([#4](https://github.com/FreshlyBrewedCode/pymee/issues/4)) ([`af09a42`](https://github.com/FreshlyBrewedCode/pymee/commit/af09a42dd91c6b6deffbfc30532ff52d57b00537))
+* fix: fix failure to reconnect on remote disconnect (#4) ([`af09a42`](https://github.com/FreshlyBrewedCode/pymee/commit/af09a42dd91c6b6deffbfc30532ff52d57b00537))
+
 
 ## v1.7.0 (2023-05-05)
+
 ### Feature
-* Change Logging to use nemd logger ([#3](https://github.com/FreshlyBrewedCode/pymee/issues/3)) ([`40f32c4`](https://github.com/FreshlyBrewedCode/pymee/commit/40f32c462d7a9cec7eef590e4bb77046527213a4))
+
+* feat: Change Logging to use nemd logger (#3)
+
+This changes logging, so it uses a logger with (__name__), so logs can be identified easier.
+
+This also will enable log configuration in Home Assistant. ([`40f32c4`](https://github.com/FreshlyBrewedCode/pymee/commit/40f32c462d7a9cec7eef590e4bb77046527213a4))
+
 
 ## v1.6.0 (2023-02-20)
+
 ### Feature
-* Add more constants to allow additional devices / profiles ([#2](https://github.com/FreshlyBrewedCode/pymee/issues/2)) ([`2914835`](https://github.com/FreshlyBrewedCode/pymee/commit/29148354189955caa861704fdf1f875752ae6e80))
+
+* feat: add more constants to allow additional devices / profiles (#2)
+
+- Update const.py
+- Add AttributeTypes above 324
+- Count up Version number
+- v1.5.5 add attributes
+- Add more constants
+- Added constants found in https://github.com/stfnhmplr/homee-api/blob/main/lib/enums.js
+- revert version number - will be done automatically
+- revert version 1.5.5. change - will be done automatically. ([`2914835`](https://github.com/FreshlyBrewedCode/pymee/commit/29148354189955caa861704fdf1f875752ae6e80))
+
 
 ## v1.5.4 (2022-09-19)
+
 ### Fix
-* Fixed loop parameter in asyncio + tested ([#1](https://github.com/FreshlyBrewedCode/pymee/issues/1)) ([`1041e56`](https://github.com/FreshlyBrewedCode/pymee/commit/1041e56f066a6a3a9c90b82e4886fdc222db4bb5))
+
+* fix: fixed loop parameter in asyncio + tested (#1) ([`1041e56`](https://github.com/FreshlyBrewedCode/pymee/commit/1041e56f066a6a3a9c90b82e4886fdc222db4bb5))
+
 
 ## v1.5.3 (2021-02-08)
+
 ### Fix
-* Implement reconnects iteratively to avoid recursion problems ([`52c2a6b`](https://github.com/FreshlyBrewedCode/pymee/commit/52c2a6b37cd30a9c3c939c110744222187663d1e))
+
+* fix: implement reconnects iteratively to avoid recursion problems ([`52c2a6b`](https://github.com/FreshlyBrewedCode/pymee/commit/52c2a6b37cd30a9c3c939c110744222187663d1e))
+
+### Style
+
+* style: remove old comments ([`b54e1d7`](https://github.com/FreshlyBrewedCode/pymee/commit/b54e1d703c85005b2d783abf4ae4cccc3be780f8))
+
 
 ## v1.5.2 (2021-02-07)
+
 ### Fix
-* Turn `on_reconnect` callback into coroutine ([`4fded37`](https://github.com/FreshlyBrewedCode/pymee/commit/4fded37bf7502f7e3d95fb9625506f990585e67d))
+
+* fix: turn `on_reconnect` callback into coroutine ([`4fded37`](https://github.com/FreshlyBrewedCode/pymee/commit/4fded37bf7502f7e3d95fb9625506f990585e67d))
+
 
 ## v1.5.1 (2021-02-06)
+
 ### Fix
-* Reuse existing node, group and relationship instances after reconnect ([`ead401b`](https://github.com/FreshlyBrewedCode/pymee/commit/ead401b484e30f7030059bda8538f3436d403411))
+
+* fix: reuse existing node, group and relationship instances after reconnect ([`ead401b`](https://github.com/FreshlyBrewedCode/pymee/commit/ead401b484e30f7030059bda8538f3436d403411))
+
+### Style
+
+* style: reformat code with black ([`daf3e65`](https://github.com/FreshlyBrewedCode/pymee/commit/daf3e6528af5e80257da3e2421e31be56e92b9db))
+
 
 ## v1.5.0 (2021-02-04)
+
 ### Feature
-* Add working reconnection logic during authentication ([`235ea6f`](https://github.com/FreshlyBrewedCode/pymee/commit/235ea6f33b6f87536c486d794e274e4b8a22dfeb))
+
+* feat: add working reconnection logic during authentication ([`235ea6f`](https://github.com/FreshlyBrewedCode/pymee/commit/235ea6f33b6f87536c486d794e274e4b8a22dfeb))
 
 ### Fix
-* Improve ping handler shutdown ([`5d69574`](https://github.com/FreshlyBrewedCode/pymee/commit/5d695743615ea7cffaf143939afb4b693b692f88))
-* Fix syntax and logic errors during reconnection ([`b199f85`](https://github.com/FreshlyBrewedCode/pymee/commit/b199f85ad1f76f1bd1fe38033ee3d5c7b06f7dc2))
-* Handle all exception types during authentication ([`0da9005`](https://github.com/FreshlyBrewedCode/pymee/commit/0da9005bbd6b109c2dacfaec8610236eee1de012))
-* Remove legacy reconnection logic in `get_access_token` ([`52dd77a`](https://github.com/FreshlyBrewedCode/pymee/commit/52dd77ab38d95f3ed154947926fcd981335873f5))
-* Fix unclosed client session error during authentication ([`d7b5ca5`](https://github.com/FreshlyBrewedCode/pymee/commit/d7b5ca5b96b6da14e9e34764c233e118135de6b5))
+
+* fix: improve ping handler shutdown ([`5d69574`](https://github.com/FreshlyBrewedCode/pymee/commit/5d695743615ea7cffaf143939afb4b693b692f88))
+
+* fix: fix syntax and logic errors during reconnection ([`b199f85`](https://github.com/FreshlyBrewedCode/pymee/commit/b199f85ad1f76f1bd1fe38033ee3d5c7b06f7dc2))
+
+* fix: handle all exception types during authentication ([`0da9005`](https://github.com/FreshlyBrewedCode/pymee/commit/0da9005bbd6b109c2dacfaec8610236eee1de012))
+
+* fix: remove legacy reconnection logic in `get_access_token` ([`52dd77a`](https://github.com/FreshlyBrewedCode/pymee/commit/52dd77ab38d95f3ed154947926fcd981335873f5))
+
+* fix: fix unclosed client session error during authentication
+
+Move the check of the access token to the top, so no client session is created if the token is still valid. ([`d7b5ca5`](https://github.com/FreshlyBrewedCode/pymee/commit/d7b5ca5b96b6da14e9e34764c233e118135de6b5))
+
 
 ## v1.4.0 (2021-02-03)
+
 ### Feature
-* Enable automatic reconnection attempts ([`ee3fb00`](https://github.com/FreshlyBrewedCode/pymee/commit/ee3fb001067bb3ca90c1221584d1893cc7ebe085))
+
+* feat: enable automatic reconnection attempts ([`ee3fb00`](https://github.com/FreshlyBrewedCode/pymee/commit/ee3fb001067bb3ca90c1221584d1893cc7ebe085))
+
 
 ## v1.3.0 (2021-02-03)
-### Feature
-* Add manual websocket ping handler ([`773caa0`](https://github.com/FreshlyBrewedCode/pymee/commit/773caa0451d6b9353a1dd97ce8a37ad2e609a127))
 
 ### Documentation
-* Use large badges in README ([`370006b`](https://github.com/FreshlyBrewedCode/pymee/commit/370006b58fb7a793ba130b8f5998b6c941c41bba))
+
+* docs: use large badges in README ([`370006b`](https://github.com/FreshlyBrewedCode/pymee/commit/370006b58fb7a793ba130b8f5998b6c941c41bba))
+
+### Feature
+
+* feat: add manual websocket ping handler ([`773caa0`](https://github.com/FreshlyBrewedCode/pymee/commit/773caa0451d6b9353a1dd97ce8a37ad2e609a127))
+
 
 ## v1.2.0 (2020-11-10)
-### Feature
-* Handle `groups`, `nodes`, `group` and `relationship` message types ([`fddac28`](https://github.com/FreshlyBrewedCode/pymee/commit/fddac2831e0185464d2b9991ad04cc52dd28ef5b))
-* Manage groups, settings and relationships using model ([`5650375`](https://github.com/FreshlyBrewedCode/pymee/commit/56503756a0ccd006aa57b0bebdbee5d6764173b9))
-* Add `HomeeRelationship` model ([`21f2db0`](https://github.com/FreshlyBrewedCode/pymee/commit/21f2db01267bc917a2af568aa109eafa55bea071))
-* Add `HomeeOptions` model ([`45efe54`](https://github.com/FreshlyBrewedCode/pymee/commit/45efe54709d2849f56d59fd26d8fb0a2a19f98e4))
-* Add `HomeeGroup` model ([`9d3759f`](https://github.com/FreshlyBrewedCode/pymee/commit/9d3759fde70dfe8e9beea83e92f5437e90ea183e))
-
-### Fix
-* Decode strings in `HomeeGroup` ([`9db565e`](https://github.com/FreshlyBrewedCode/pymee/commit/9db565e7268f513d4ffd8b974af5116e3da9e6a7))
 
 ### Documentation
-* Mention Home Assistant homee integration in README ([`d44c6b6`](https://github.com/FreshlyBrewedCode/pymee/commit/d44c6b6caa7ee82a76dff387805f5b7e7294b549))
+
+* docs: mention Home Assistant homee integration in README ([`d44c6b6`](https://github.com/FreshlyBrewedCode/pymee/commit/d44c6b6caa7ee82a76dff387805f5b7e7294b549))
+
+### Feature
+
+* feat: handle `groups`, `nodes`, `group` and `relationship` message types ([`fddac28`](https://github.com/FreshlyBrewedCode/pymee/commit/fddac2831e0185464d2b9991ad04cc52dd28ef5b))
+
+* feat: manage groups, settings and relationships using model ([`5650375`](https://github.com/FreshlyBrewedCode/pymee/commit/56503756a0ccd006aa57b0bebdbee5d6764173b9))
+
+* feat: add `HomeeRelationship` model ([`21f2db0`](https://github.com/FreshlyBrewedCode/pymee/commit/21f2db01267bc917a2af568aa109eafa55bea071))
+
+* feat: add `HomeeOptions` model ([`45efe54`](https://github.com/FreshlyBrewedCode/pymee/commit/45efe54709d2849f56d59fd26d8fb0a2a19f98e4))
+
+* feat: add `HomeeGroup` model ([`9d3759f`](https://github.com/FreshlyBrewedCode/pymee/commit/9d3759fde70dfe8e9beea83e92f5437e90ea183e))
+
+### Fix
+
+* fix: decode strings in `HomeeGroup` ([`9db565e`](https://github.com/FreshlyBrewedCode/pymee/commit/9db565e7268f513d4ffd8b974af5116e3da9e6a7))
+
+### Unknown
+
+* Merge branch &#39;develop&#39; ([`66f19ea`](https://github.com/FreshlyBrewedCode/pymee/commit/66f19ea5765bf2e663c8893da68613213ed98913))
+
 
 ## v1.1.2 (2020-11-01)
+
 ### Fix
-* Fix exception handling bug that causes connection to close instantly ([`050d1d0`](https://github.com/FreshlyBrewedCode/pymee/commit/050d1d04c2b8bca243de1c8d50886ecce580aa67))
+
+* fix: fix exception handling bug that causes connection to close instantly ([`050d1d0`](https://github.com/FreshlyBrewedCode/pymee/commit/050d1d04c2b8bca243de1c8d50886ecce580aa67))
+
 
 ## v1.1.1 (2020-11-01)
-### Fix
-* Fix websocket exceptions not getting handled correctly causing websocket to stay open ([`624b383`](https://github.com/FreshlyBrewedCode/pymee/commit/624b383736371d44dfade05fdc803fb6f78c8bcd))
+
+### Chore
+
+* chore(Git): add homee json dump to gitignore ([`9234d26`](https://github.com/FreshlyBrewedCode/pymee/commit/9234d26a5c4b06f5ccf7f8a8b2fd70ef16929187))
 
 ### Documentation
-* Add link to websockets library in README ([`5f42af6`](https://github.com/FreshlyBrewedCode/pymee/commit/5f42af6367bea667dca275009cda2010e9e4712e))
-* Update examples in README ([`0177066`](https://github.com/FreshlyBrewedCode/pymee/commit/01770668ecdd43ca364c96d6341f47080fc9ced3))
+
+* docs: add link to websockets library in README ([`5f42af6`](https://github.com/FreshlyBrewedCode/pymee/commit/5f42af6367bea667dca275009cda2010e9e4712e))
+
+* docs: update examples in README ([`0177066`](https://github.com/FreshlyBrewedCode/pymee/commit/01770668ecdd43ca364c96d6341f47080fc9ced3))
+
+### Fix
+
+* fix: fix websocket exceptions not getting handled correctly causing websocket to stay open ([`624b383`](https://github.com/FreshlyBrewedCode/pymee/commit/624b383736371d44dfade05fdc803fb6f78c8bcd))
+
 
 ## v1.1.0 (2020-10-24)
+
+### Chore
+
+* chore(Git): ignore local testing script ([`7dd4a11`](https://github.com/FreshlyBrewedCode/pymee/commit/7dd4a11c461b94ab743562bee7f70404fb5804b4))
+
 ### Feature
-* Add `add_on_changed_listener()` to `HomeeNode` to support better update handling ([`12cc3d1`](https://github.com/FreshlyBrewedCode/pymee/commit/12cc3d17ea6aa4cc3354b76f97e1833ac7b029a5))
+
+* feat: add `add_on_changed_listener()` to `HomeeNode` to support better update handling ([`12cc3d1`](https://github.com/FreshlyBrewedCode/pymee/commit/12cc3d17ea6aa4cc3354b76f97e1833ac7b029a5))
 
 ### Fix
-* Add error handling to websocket receive and send handlers ([`6e9f021`](https://github.com/FreshlyBrewedCode/pymee/commit/6e9f02191ea2d107563d962a42681d1f18f54c5b))
-* Change value type in `set_value()` from `int` to `float` ([`0974bac`](https://github.com/FreshlyBrewedCode/pymee/commit/0974bacd8a78b0103d222d7357b502e6fb63e042))
-* Use module relative imports ([`4f33a6f`](https://github.com/FreshlyBrewedCode/pymee/commit/4f33a6f6ae8cde8ac788e1d9e02a2d4ec0d9b666))
+
+* fix: add error handling to websocket receive and send handlers ([`6e9f021`](https://github.com/FreshlyBrewedCode/pymee/commit/6e9f02191ea2d107563d962a42681d1f18f54c5b))
+
+* fix: change value type in `set_value()` from `int` to `float` ([`0974bac`](https://github.com/FreshlyBrewedCode/pymee/commit/0974bacd8a78b0103d222d7357b502e6fb63e042))
+
+* fix: use module relative imports ([`4f33a6f`](https://github.com/FreshlyBrewedCode/pymee/commit/4f33a6f6ae8cde8ac788e1d9e02a2d4ec0d9b666))
+
 
 ## v1.0.1 (2020-10-23)
+
 ### Fix
-* Bump to v1.0.1 to avoid PyPI conflict ([`573e700`](https://github.com/FreshlyBrewedCode/pymee/commit/573e70054d3711196b3e39d1cc9ba80b4794a13a))
+
+* fix: bump to v1.0.1 to avoid PyPI conflict ([`573e700`](https://github.com/FreshlyBrewedCode/pymee/commit/573e70054d3711196b3e39d1cc9ba80b4794a13a))
+
 
 ## v1.0.0 (2020-10-23)
-### Feature
-* Add utility methods for getting nodes and atributes by id ([`f43014c`](https://github.com/FreshlyBrewedCode/pymee/commit/f43014cb77da7a4059695663a093a4acfb3b5d02))
-* Support updating/adding nodes after receiving a 'nodes' message ([`535602b`](https://github.com/FreshlyBrewedCode/pymee/commit/535602b8b43696b29f0e1e9d86bcde9e40223dbb))
-* Provide async disconnected event ([`c019ef5`](https://github.com/FreshlyBrewedCode/pymee/commit/c019ef5d55306007f98ee2d0154ccee138d2cb25))
-* Use coroutines for Homee callbacks ([`99296e6`](https://github.com/FreshlyBrewedCode/pymee/commit/99296e650268467df6370c034d544c10c81530a1))
-* Port to websockets package ([`1b578bc`](https://github.com/FreshlyBrewedCode/pymee/commit/1b578bc166cc0d9c6238980aca1a889a2e8ddef2))
 
 ### Breaking
-* Homee callbacks need to be awaitable, i.e. async functions. Handleing callbacks in the event loop should provide a better development experience since most functions in the Homee api are async now.  ([`99296e6`](https://github.com/FreshlyBrewedCode/pymee/commit/99296e650268467df6370c034d544c10c81530a1))
+
+* feat: use coroutines for Homee callbacks
+
+BREAKING CHANGE: Homee callbacks need to be awaitable, i.e. async functions. Handleing callbacks in the event loop should provide a better development experience since most functions in the Homee api are async now. ([`99296e6`](https://github.com/FreshlyBrewedCode/pymee/commit/99296e650268467df6370c034d544c10c81530a1))
 
 ### Documentation
-* Add badges ♥ ([`a7e3a28`](https://github.com/FreshlyBrewedCode/pymee/commit/a7e3a28e7d6d8116c893214cd6e6b24ed5758c0f))
+
+* docs: add badges ♥ ([`a7e3a28`](https://github.com/FreshlyBrewedCode/pymee/commit/a7e3a28e7d6d8116c893214cd6e6b24ed5758c0f))
+
+### Feature
+
+* feat: add utility methods for getting nodes and atributes by id ([`f43014c`](https://github.com/FreshlyBrewedCode/pymee/commit/f43014cb77da7a4059695663a093a4acfb3b5d02))
+
+* feat: support updating/adding nodes after receiving a &#39;nodes&#39; message ([`535602b`](https://github.com/FreshlyBrewedCode/pymee/commit/535602b8b43696b29f0e1e9d86bcde9e40223dbb))
+
+* feat: provide async disconnected event
+
+`await Homee.wait_until_disconnected()` can now be used to wait until the connection has been closed. ([`c019ef5`](https://github.com/FreshlyBrewedCode/pymee/commit/c019ef5d55306007f98ee2d0154ccee138d2cb25))
+
+* feat: port to websockets package ([`1b578bc`](https://github.com/FreshlyBrewedCode/pymee/commit/1b578bc166cc0d9c6238980aca1a889a2e8ddef2))
+
+### Unknown
+
+* Merge branch &#39;develop&#39; ([`858ddc2`](https://github.com/FreshlyBrewedCode/pymee/commit/858ddc22573eea4ae6b6ac9b1fa746641ae80607))
+
 
 ## v0.2.0 (2020-10-23)
-### Feature
-* Raise unique exceptions while acquiring access token ([`edac67b`](https://github.com/FreshlyBrewedCode/pymee/commit/edac67bad668349ced6d96f8306836f884d05937))
+
+### Chore
+
+* chore(CI): add version variable to config ([`c34632a`](https://github.com/FreshlyBrewedCode/pymee/commit/c34632a72673f5e32ffefd9538e2dd0190f406ac))
+
+* chore(CI): add workflow for semantic release ([`c174217`](https://github.com/FreshlyBrewedCode/pymee/commit/c1742178ecaefb85dab5487d098159c10f872614))
 
 ### Documentation
-* Add install instructions and bump version ([`f0208a5`](https://github.com/FreshlyBrewedCode/pymee/commit/f0208a565523e63ff0ecf976c5288ffc0d4fc71a))
-* Add README ([`8701f0a`](https://github.com/FreshlyBrewedCode/pymee/commit/8701f0ad47120d8291eb5b4f4c441cc151c468b2))
+
+* docs: add install instructions and bump version ([`f0208a5`](https://github.com/FreshlyBrewedCode/pymee/commit/f0208a565523e63ff0ecf976c5288ffc0d4fc71a))
+
+### Feature
+
+* feat: raise unique exceptions while acquiring access token ([`edac67b`](https://github.com/FreshlyBrewedCode/pymee/commit/edac67bad668349ced6d96f8306836f884d05937))
+
+
+## v0.0.1 (2020-10-21)
+
+### Chore
+
+* chore: adjust package structure for PyPi release ([`ac0368f`](https://github.com/FreshlyBrewedCode/pymee/commit/ac0368fd239c39f18ada3667ecbfe2f65c9f196d))
+
+* chore: add LICENSE ([`d0ce035`](https://github.com/FreshlyBrewedCode/pymee/commit/d0ce035df70cce12e18b17fc02e3fffa649ea7e7))
+
+### Documentation
+
+* docs: add README ([`8701f0a`](https://github.com/FreshlyBrewedCode/pymee/commit/8701f0ad47120d8291eb5b4f4c441cc151c468b2))
+
+### Refactor
+
+* refactor: remove unused import in model.py ([`695b1f2`](https://github.com/FreshlyBrewedCode/pymee/commit/695b1f2d817ac55a07b4e410953748402f83f8f1))
+
+### Unknown
+
+* initial commit ([`67eb054`](https://github.com/FreshlyBrewedCode/pymee/commit/67eb054f67326b3d60bb04acb30397d1c5c13bfb))
