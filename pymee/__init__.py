@@ -1,7 +1,6 @@
 import asyncio
 import hashlib
 import json
-from typing import List
 import aiohttp
 from aiohttp.helpers import BasicAuth
 import websockets
@@ -45,9 +44,9 @@ class Homee:
         self.deviceId = str(device).lower().replace(" ", "-")
 
         self.settings: HomeeSettings = None
-        self.nodes: List[HomeeNode] = []
-        self.groups: List[HomeeGroup] = []
-        self.relationships: List[HomeeRelationship] = []
+        self.nodes: list[HomeeNode] = []
+        self.groups: list[HomeeGroup] = []
+        self.relationships: list[HomeeRelationship] = []
         self.token = ""
         self.expires = 0
         self.connected = False
@@ -142,7 +141,7 @@ class Homee:
     async def open_ws(self):
         """Opens the websocket connection assuming an access token was already received. Runs until connection is closed again."""
 
-        _LOGGER.info("Opening websocket...")
+        _LOGGER.info("Opening websocket")
 
         if self.retries > 0:
             await self.on_reconnect()
@@ -183,10 +182,6 @@ class Homee:
 
                     except websockets.exceptions.ConnectionClosed as e:
                         self.connected = False
-                        try:
-                            ws.abort_pings()
-                        except Exception as e:
-                            await self._ws_on_error(e)
                         await self.on_disconnected()
         except Exception as e:
             await self._ws_on_error(e)
@@ -202,6 +197,7 @@ class Homee:
             return
         except Exception as e:
             if not self.shouldClose:
+                _LOGGER.warning(f"Error in receive handler: {e}")
                 raise e
 
     async def _ws_send_handler(self, ws: websockets.WebSocketClientProtocol):
@@ -288,7 +284,7 @@ class Homee:
         try:
             msgType = list(msg)[0]
         except:
-            _LOGGER.warn(f"Invalid message: {msg}")
+            _LOGGER.warning(f"Invalid message: {msg}")
             await self.on_error()
             return
 
@@ -384,8 +380,11 @@ class Homee:
         if len(self.relationships) <= 0:
             self.relationships = list(map(lambda r: HomeeRelationship(r), data))
         else:
-            for relationship_data in data:
-                self._update_or_create_relationship(relationship_data)
+            try:
+                for relationship_data in data:
+                    self._update_or_create_relationship(relationship_data)
+            except:
+                _LOGGER.warning(f"Could not iterate over relationships: {data}")
 
     def _remap_relationships(self):
         """Remap the relationships between nodes and groups defined by the relationships list."""
@@ -433,7 +432,7 @@ class Homee:
         await self.send(
             f"PUT:/nodes/{deviceId}/attributes/{attributeId}?target_value={value}"
         )
-   
+
     async def update_node(self, nodeId: int):
         """Request current data for a node."""
         _LOGGER.info(f"Request current data for node {nodeId}")
@@ -441,7 +440,9 @@ class Homee:
 
     async def update_attribute(self, nodeId: int, attributeId: int):
         """Request current data for an attribute"""
-        _LOGGER.info(f'request current data for attribute {attributeId} of device {nodeId}')
+        _LOGGER.info(
+            f"request current data for attribute {attributeId} of device {nodeId}"
+        )
         await self.send(f"GET:/nodes/{nodeId}/attributes/{attributeId}")
 
     async def play_homeegram(self, homeegramId: int):
@@ -481,8 +482,7 @@ class Homee:
     async def on_disconnected(self):
         """Called after the websocket connection has been closed."""
         if not self.shouldClose:
-            _LOGGER.warn("Disconnected, trying to reconnect.")
-            self.reconnect()
+            _LOGGER.info("Disconnected")
 
     async def on_error(self, error: str = None):
         """Called after an error has occurred."""
