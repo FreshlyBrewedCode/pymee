@@ -107,6 +107,15 @@ remove_listener = node.add_on_changed_listener(my_node_handler)
 remove_listener()
 ```
 
+To manually request updates from Homee, you can use the following functions:
+```python
+homee.update_node(self, nodeId: int)
+"""Request current data for a node."""
+
+homee.update_attribute(self, nodeId: int, attributeId: int)
+"""Request current data for an attribute"""
+```
+
 ### More examples
 
 Example implementation that dumps all info into a json file and logs whenever a light is turned on or off:
