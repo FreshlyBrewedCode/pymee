@@ -195,9 +195,9 @@ class Homee:
             await self._ws_on_message(msg)
         except websockets.exceptions.ConnectionClosedOK:
             return
-        except Exception as e:
+        except websockets.exceptions.ConnectionClosed as e:
             if not self.shouldClose:
-                _LOGGER.warning(f"Error in receive handler: {e}")
+                self.connected = False
                 raise e
 
     async def _ws_send_handler(self, ws: websockets.WebSocketClientProtocol):
@@ -205,8 +205,9 @@ class Homee:
             msg = await self._message_queue.get()
             if self.connected and not self.shouldClose:
                 await ws.send(msg)
-        except Exception as e:
+        except websockets.exceptions.ConnectionClosed as e:
             if not self.shouldClose:
+                self.connected = False
                 raise e
 
     async def _ws_ping_handler(self, ws: websockets.WebSocketClientProtocol):
@@ -218,6 +219,7 @@ class Homee:
             try:
                 await ws.ping()
             except websockets.exceptions.ConnectionClosed as e:
+                self.connected = False
                 await self.on_disconnected()
             await asyncio.sleep(self.pingInterval)
 
@@ -339,14 +341,14 @@ class Homee:
 
         _LOGGER.info(f"Updating attribute {attribute_data['id']}")
 
-        # try:
+              
         attrNodeId = attribute_data["node_id"]
         node = self.get_node_by_id(attrNodeId)
         if node != None:
             node._update_attribute(attribute_data)
             await self.on_attribute_updated(attribute_data, node)
-        # except:
-        #     self._log("Unable to update attribute")
+                 
+                                                     
 
     def _update_or_create_node(self, node_data: dict):
         existingNode = self.get_node_by_id(node_data["id"])
@@ -367,7 +369,7 @@ class Homee:
 
     def _update_or_create_relationship(self, data: dict):
         relationship: HomeeRelationship = next(
-            [r for r in self.relationships if r.id == data["id"]], None
+            (r for r in self.relationships if r.id == data["id"]), None
         )
 
         if relationship is not None:
@@ -380,11 +382,11 @@ class Homee:
         if len(self.relationships) <= 0:
             self.relationships = list(map(lambda r: HomeeRelationship(r), data))
         else:
-            try:
-                for relationship_data in data:
-                    self._update_or_create_relationship(relationship_data)
-            except:
-                _LOGGER.warning(f"Could not iterate over relationships: {data}")
+                
+            for relationship_data in data:
+                self._update_or_create_relationship(relationship_data)
+                   
+                                                                                
 
     def _remap_relationships(self):
         """Remap the relationships between nodes and groups defined by the relationships list."""
@@ -475,6 +477,7 @@ class Homee:
 
     async def on_max_retries(self):
         """Called if the maximum amount of retries was reached."""
+        _LOGGER.warn(f"Could not reconnect after {self.maxRetries} retries.")
 
     async def on_connected(self):
         """Called once the websocket connection has been established."""

@@ -405,7 +405,7 @@ class HomeeSettings:
 
     @property
     def homee_name(self) -> str:
-        return self._data["homee_name"]
+        return unquote(self._data["homee_name"])
 
     @property
     def LastMissingCubeNotification(self) -> str:
