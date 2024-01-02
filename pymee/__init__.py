@@ -177,11 +177,13 @@ class Homee:
                         if exceptions and exceptions[0] is not None:
                             raise exceptions[0]
 
-                    except websockets.exceptions.ConnectionClosed as e:
+                    except websockets.exceptions.ConnectionClosedError as e:
                         self.connected = False
                         await self.on_disconnected()
-        except Exception as e:
+        except websockets.exceptions.WebSocketException as e:
             await self._ws_on_error(e)
+        except TimeoutError:
+            _LOGGER.info("Connection Timeout")
 
         self.retries += 1
         await self._ws_on_close()
@@ -192,7 +194,7 @@ class Homee:
             await self._ws_on_message(msg)
         except websockets.exceptions.ConnectionClosedOK:
             return
-        except websockets.exceptions.ConnectionClosed as e:
+        except websockets.exceptions.ConnectionClosedError as e:
             if not self.shouldClose:
                 self.connected = False
                 raise e
@@ -236,7 +238,6 @@ class Homee:
     async def _ws_on_error(self, error):
         """Websocket on_error callback."""
 
-        _LOGGER.error(f"An error occurred: {error}")
         await self.on_error(error)
 
     async def send(self, msg: str):
@@ -458,10 +459,11 @@ class Homee:
 
     async def on_reconnect(self):
         """Called right before a reconnection attempt is started."""
+        _LOGGER.info("Reconnecting")
 
     async def on_max_retries(self):
         """Called if the maximum amount of retries was reached."""
-        _LOGGER.warn(f"Could not reconnect after {self.maxRetries} retries.")
+        _LOGGER.warning(f"Could not reconnect after {self.maxRetries} retries.")
 
     async def on_connected(self):
         """Called once the websocket connection has been established."""
@@ -473,7 +475,8 @@ class Homee:
 
     async def on_error(self, error: str = None):
         """Called after an error has occurred."""
-
+        _LOGGER.error(f"An error occurred: {error}")
+    
     async def on_message(self, msg: dict):
         """Called when the websocket receives a message. The message is automatically parsed from json into a dictionary."""
 
