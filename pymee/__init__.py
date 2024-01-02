@@ -153,9 +153,6 @@ class Homee:
             ) as ws:
                 await self._ws_on_open()
 
-                # Start Ping
-                asyncio.create_task(self._ws_ping_handler(ws))
-
                 while (not self.shouldClose) and self.connected:
                     try:
                         receive_task = asyncio.ensure_future(
@@ -209,19 +206,6 @@ class Homee:
             if not self.shouldClose:
                 self.connected = False
                 raise e
-
-    async def _ws_ping_handler(self, ws: websockets.WebSocketClientProtocol):
-        if self.pingInterval <= 0:
-            return
-
-        while self.connected and not self.shouldClose and ws.open:
-            _LOGGER.info("PING!")
-            try:
-                await ws.ping()
-            except websockets.exceptions.ConnectionClosed as e:
-                self.connected = False
-                await self.on_disconnected()
-            await asyncio.sleep(self.pingInterval)
 
     async def _ws_on_open(self):
         """Websocket on_open callback."""
