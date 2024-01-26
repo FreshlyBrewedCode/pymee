@@ -245,6 +245,10 @@ class HomeeNode:
         return self._data["security"]
 
     @property
+    def attribute_map(self) -> dict | None:
+        return self._attribute_map
+    
+    @property
     def attributes_raw(self) -> List[dict]:
         return self._data["attributes"]
 
