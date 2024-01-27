@@ -1,4 +1,4 @@
-from typing import Callable, List
+from collections.abc import Callable
 from urllib.parse import unquote
 
 
@@ -11,48 +11,49 @@ class HomeeAttributeOptions:
         """List (int) of attribute types that this attribute can observe."""
         if "can_observe" in self._data:
             return self._data["can_observe"]
-        else:
-            return []
+
+        return []
 
     @property
     def observes(self) -> list:
         """List (int) of attribute ids that this attribute observes."""
         if "observes" in self._data:
             return self._data["observes"]
-        else:
-            return []
+
+        return []
 
     @property
     def observed_by(self) -> list:
         """List (int) of attribute ids that observe this attribute."""
         if "observed_by" in self._data:
             return self._data["observed_by"]
-        else:
-            return []
+
+        return []
 
     @property
     def automations(self) -> list:
         """List (str) of automations for thie attribute."""
         if "automations" in self._data:
             return self._data["automations"]
-        else:
-            return []
+
+        return []
 
     @property
-    def history(self) -> List[dict]:
+    def history(self) -> list[dict]:
         """History data for the attribute. {'day': int, 'week': int, 'month': int, 'stepped': bool}"""
         if "history" in self._data:
             return self._data["history"]
-        else:
-            return {}
+
+        return {}
 
     @property
     def reverse_control_ui(self) -> bool:
         """Do up/down controls work in opposite direction?"""
         if "reverse_control_ui" in self._data:
             return self._data["reverse_control_ui"]
-        else:
-            return False
+
+        return False
+
 
 class HomeeAttribute:
     def __init__(self, data: dict) -> None:
@@ -130,7 +131,7 @@ class HomeeAttribute:
 
     @property
     def changed_by(self) -> int:
-        """How the attribute was changed. Compare with const.AttributeChangedBy"""
+        """How the attribute was changed. Compare with const.AttributeChangedBy."""
         return self._data["changed_by"]
 
     @property
@@ -162,13 +163,13 @@ class HomeeAttribute:
 class HomeeNode:
     def __init__(self, data: dict) -> None:
         self._data = data
-        self.attributes: List[HomeeAttribute] = []
+        self.attributes: list[HomeeAttribute] = []
         for a in self.attributes_raw:
             self.attributes.append(HomeeAttribute(a))
         self._attribute_map: dict = None
         self._remap_attributes()
         self._onChangedListeners = []
-        self.groups: List[HomeeGroup] = []
+        self.groups: list[HomeeGroup] = []
 
     @property
     def id(self) -> int:
@@ -247,9 +248,9 @@ class HomeeNode:
     @property
     def attribute_map(self) -> dict | None:
         return self._attribute_map
-    
+
     @property
-    def attributes_raw(self) -> List[dict]:
+    def attributes_raw(self) -> list[dict]:
         return self._data["attributes"]
 
     def get_attribute_index(self, attributeId: int) -> int:
@@ -274,18 +275,18 @@ class HomeeNode:
 
     def _update_attribute(self, attribute_data: dict):
         attribute = self.get_attribute_by_id(attribute_data["id"])
-        if attribute != None:
+        if attribute is not None:
             attribute._data = attribute_data
             result = [
                 listener(self, attribute) for listener in self._onChangedListeners
             ]
 
-    def _update_attributes(self, attributes: List[dict]):
+    def _update_attributes(self, attributes: list[dict]):
         for attr in attributes:
             self._update_attribute(attr)
 
     def _remap_attributes(self):
-        if self._attribute_map != None:
+        if self._attribute_map is not None:
             self._attribute_map.clear()
         else:
             self._attribute_map = {}
@@ -296,7 +297,7 @@ class HomeeNode:
 class HomeeGroup:
     def __init__(self, data) -> None:
         self._data = data
-        self.nodes: List[HomeeNode] = []
+        self.nodes: list[HomeeNode] = []
 
     @property
     def id(self) -> int:
@@ -444,7 +445,7 @@ class HomeeSettings:
         return self._data["lan_ip_address"]
 
     @property
-    def available_ssids(self) -> List[str]:
+    def available_ssids(self) -> list[str]:
         return self._data["available_ssids"]
 
     @property
@@ -464,11 +465,11 @@ class HomeeSettings:
         return self._data["uid"]
 
     @property
-    def cubes(self) -> List[dict]:
+    def cubes(self) -> list[dict]:
         return self._data["cubes"]
 
     @property
-    def extensions(self) -> List[dict]:
+    def extensions(self) -> list[dict]:
         return self._data["extensions"]
 
 
