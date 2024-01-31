@@ -467,7 +467,7 @@ class Homee:
 
     async def on_connected(self):
         """Called once the websocket connection has been established."""
-        If self.retries > 0:
+        if self.retries > 0:
             _LOGGER.warning("Homee %s Reconnected after %s retries", self.device, self.retries)
 
     async def on_disconnected(self):
