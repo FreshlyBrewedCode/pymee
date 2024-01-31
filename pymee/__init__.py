@@ -120,6 +120,9 @@ class Homee:
             # Sleep after reconnect
             if self.retries > 0:
                 await asyncio.sleep(self.reconnectInterval * self.retries)
+                _LOGGER.info(
+                    "Attempting to reconnect in %s seconds", self.reconnectInterval * self.retries
+                )
 
             try:
                 await self.get_access_token()
@@ -230,10 +233,11 @@ class Homee:
         """Websocket on_close callback."""
         # if not self.shouldClose and self.retries <= 1:
 
-        self.connected = False
-        self._disconnected_event.set()
+        if self.connected:
+            self.connected = False
+            self._disconnected_event.set()
 
-        await self.on_disconnected()
+            await self.on_disconnected()
 
     async def _ws_on_error(self, error):
         """Websocket on_error callback."""
@@ -251,11 +255,6 @@ class Homee:
     async def reconnect(self):
         """Start a reconnection attempt."""
 
-        _LOGGER.info(
-            "Attempting to reconnect in %s seconds", self.reconnectInterval * self.retries
-        )
-
-        await asyncio.sleep(self.reconnectInterval * self.retries)
         await self.run()
 
     def disconnect(self):
@@ -326,14 +325,14 @@ class Homee:
 
         _LOGGER.info("Updating attribute %s", attribute_data['id'])
 
-              
+
         attrNodeId = attribute_data["node_id"]
         node = self.get_node_by_id(attrNodeId)
         if node != None:
             node._update_attribute(attribute_data)
             await self.on_attribute_updated(attribute_data, node)
-                 
-                                                     
+
+
 
     def _update_or_create_node(self, node_data: dict):
         existingNode = self.get_node_by_id(node_data["id"])
@@ -367,11 +366,11 @@ class Homee:
         if len(self.relationships) <= 0:
             self.relationships = list(map(lambda r: HomeeRelationship(r), data))
         else:
-                
+
             for relationship_data in data:
                 self._update_or_create_relationship(relationship_data)
-                   
-                                                                                
+
+
 
     def _remap_relationships(self):
         """Remap the relationships between nodes and groups defined by the relationships list."""
@@ -428,7 +427,7 @@ class Homee:
     async def update_attribute(self, nodeId: int, attributeId: int):
         """Request current data for an attribute"""
         _LOGGER.info(
-            "request current data for attribute %s of device %s", attributeId, nodeId
+            "Request current data for attribute %s of device %s", attributeId, nodeId
         )
         await self.send(f"GET:/nodes/{nodeId}/attributes/{attributeId}")
 
@@ -463,7 +462,7 @@ class Homee:
 
     async def on_max_retries(self):
         """Called if the maximum amount of retries was reached."""
-        _LOGGER.warning("Could not reconnect Homee %s after %s retries.", self.device, self.maxRetries)
+        _LOGGER.warning("Could not reconnect Homee %s after %s retries", self.device, self.maxRetries)
 
     async def on_connected(self):
         """Called once the websocket connection has been established."""
@@ -478,7 +477,7 @@ class Homee:
     async def on_error(self, error: str = None):
         """Called after an error has occurred."""
         _LOGGER.error("An error occurred: %s", error)
-    
+
     async def on_message(self, msg: dict):
         """Called when the websocket receives a message. The message is automatically parsed from json into a dictionary."""
 
