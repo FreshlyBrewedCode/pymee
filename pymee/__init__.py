@@ -252,7 +252,7 @@ class Homee:
         """Start a reconnection attempt."""
 
         _LOGGER.info(
-            f"Attempting to reconnect in {self.reconnectInterval * self.retries} seconds..."
+            "Attempting to reconnect in %s seconds", self.reconnectInterval * self.retries
         )
 
         await asyncio.sleep(self.reconnectInterval * self.retries)
@@ -271,7 +271,7 @@ class Homee:
         try:
             msgType = list(msg)[0]
         except:
-            _LOGGER.warning(f"Invalid message: {msg}")
+            _LOGGER.warning("Invalid message: %s", msg)
             await self.on_error()
             return
 
@@ -317,14 +317,14 @@ class Homee:
         elif msgType == "relationship":
             self._update_or_create_relationship(msg["relationship"])
         else:
-            _LOGGER.info(f"Unknown/Unsupported message type: {msgType}")
+            _LOGGER.info("Unknown/Unsupported message type: %s", msgType)
 
         await self.on_message(msg)
 
     async def _handle_attribute_change(self, attribute_data: dict):
         """Internal handleling of an attribute changed message."""
 
-        _LOGGER.info(f"Updating attribute {attribute_data['id']}")
+        _LOGGER.info("Updating attribute %s", attribute_data['id'])
 
               
         attrNodeId = attribute_data["node_id"]
@@ -414,7 +414,7 @@ class Homee:
         """Set the target value of an attribute of a device."""
 
         _LOGGER.info(
-            f"Set value: Device: {deviceId} Attribute: {attributeId} To: {value}"
+            "Set value: Device: %s Attribute: %s To: %s", deviceId, attributeId, value
         )
         await self.send(
             f"PUT:/nodes/{deviceId}/attributes/{attributeId}?target_value={value}"
@@ -422,13 +422,13 @@ class Homee:
 
     async def update_node(self, nodeId: int):
         """Request current data for a node."""
-        _LOGGER.info(f"Request current data for node {nodeId}")
+        _LOGGER.info("Request current data for node %s", nodeId)
         await self.send(f"GET:/nodes/{nodeId}/")
 
     async def update_attribute(self, nodeId: int, attributeId: int):
         """Request current data for an attribute"""
         _LOGGER.info(
-            f"request current data for attribute {attributeId} of device {nodeId}"
+            "request current data for attribute %s of device %s", attributeId, nodeId
         )
         await self.send(f"GET:/nodes/{nodeId}/attributes/{attributeId}")
 
@@ -459,23 +459,25 @@ class Homee:
 
     async def on_reconnect(self):
         """Called right before a reconnection attempt is started."""
-        _LOGGER.info("Reconnecting")
+        _LOGGER.info("Homee %s Reconnecting", self.device)
 
     async def on_max_retries(self):
         """Called if the maximum amount of retries was reached."""
-        _LOGGER.warning(f"Could not reconnect after {self.maxRetries} retries.")
+        _LOGGER.warning("Could not reconnect Homee %s after %s retries.", self.device, self.maxRetries)
 
     async def on_connected(self):
         """Called once the websocket connection has been established."""
+        If self.retries > 0:
+            _LOGGER.warning("Homee %s Reconnected after %s retries", self.device, self.retries)
 
     async def on_disconnected(self):
         """Called after the websocket connection has been closed."""
         if not self.shouldClose:
-            _LOGGER.info("Disconnected")
+            _LOGGER.warning("Homee %s Disconnected", self.device)
 
     async def on_error(self, error: str = None):
         """Called after an error has occurred."""
-        _LOGGER.error(f"An error occurred: {error}")
+        _LOGGER.error("An error occurred: %s", error)
     
     async def on_message(self, msg: dict):
         """Called when the websocket receives a message. The message is automatically parsed from json into a dictionary."""
