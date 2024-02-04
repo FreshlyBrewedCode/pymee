@@ -4,7 +4,7 @@ from urllib.parse import unquote
 
 class HomeeAttributeOptions:
     def __init__(self, attributeOptions):
-        self._data = attributeOptions if attributeOptions is not None else []
+        self._data = attributeOptions
 
     @property
     def can_observe(self) -> list:
@@ -157,7 +157,10 @@ class HomeeAttribute:
     @property
     def options(self) -> HomeeAttributeOptions:
         """The options collection of the attribute. Optional, not on every attribute."""
-        return HomeeAttributeOptions(self._data["options"])
+        try:
+            return HomeeAttributeOptions(self._data["options"])
+        except:
+            return []
 
 
 class HomeeNode:
