@@ -4,7 +4,7 @@ from urllib.parse import unquote
 
 class HomeeAttributeOptions:
     def __init__(self, attributeOptions):
-        self._data = attributeOptions
+        self._data = attributeOptions if attributeOptions is not None else []
 
     @property
     def can_observe(self) -> list:
