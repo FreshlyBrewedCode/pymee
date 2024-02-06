@@ -157,7 +157,10 @@ class HomeeAttribute:
     @property
     def options(self) -> HomeeAttributeOptions:
         """The options collection of the attribute. Optional, not on every attribute."""
-        return HomeeAttributeOptions(self._data["options"])
+        try:
+            return HomeeAttributeOptions(self._data["options"])
+        except:
+            return []
 
 
 class HomeeNode:
