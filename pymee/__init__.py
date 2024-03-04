@@ -187,6 +187,8 @@ class Homee:
             await self._ws_on_error(e)
         except TimeoutError:
             _LOGGER.info("Connection Timeout")
+        except ConnectionError as e:
+            _LOGGER.info("Connection Error: %s", e)
 
         self.retries += 1
         await self._ws_on_close()
