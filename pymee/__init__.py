@@ -318,12 +318,12 @@ class Homee:
         elif msgType == "relationship":
             self._update_or_create_relationship(msg["relationship"])
         else:
-            _LOGGER.info("Unknown/Unsupported message type: %s", msgType)
+            _LOGGER.info("Unknown/Unsupported message type: %s.\nMessage: %s", msgType, msg)
 
         await self.on_message(msg)
 
     async def _handle_attribute_change(self, attribute_data: dict):
-        """Internal handleling of an attribute changed message."""
+        """Internal handling of an attribute changed message."""
 
         _LOGGER.info("Updating attribute %s", attribute_data['id'])
 
