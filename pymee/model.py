@@ -1,13 +1,18 @@
+"""Data model for Homees various data items."""
+
 from collections.abc import Callable
-from urllib.parse import unquote
 import logging
+from urllib.parse import unquote
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class HomeeAttributeOptions:
-    def __init__(self, attributeOptions):
-        self._data = attributeOptions
+    """Representation of attributes options."""
+
+    def __init__(self, attribute_options):
+        """Initialize options."""
+        self._data = attribute_options
 
     @property
     def can_observe(self) -> list:
@@ -43,7 +48,10 @@ class HomeeAttributeOptions:
 
     @property
     def history(self) -> list[dict]:
-        """History data for the attribute. {'day': int, 'week': int, 'month': int, 'stepped': bool}"""
+        """History data for the attribute.
+
+        {'day': int, 'week': int, 'month': int, 'stepped': bool}.
+        """
         if "history" in self._data:
             return self._data["history"]
 
@@ -59,7 +67,10 @@ class HomeeAttributeOptions:
 
 
 class HomeeAttribute:
+    """Representation of a Homee attribute."""
+
     def __init__(self, data: dict) -> None:
+        """Initialize the attribute."""
         self._data = data
 
     @property
@@ -99,7 +110,11 @@ class HomeeAttribute:
 
     @property
     def target_value(self) -> int:
-        """The target value of the attribute. Only used to change the attribute value. In most cases you want to use current_value instead."""
+        """The target value of the attribute.
+
+        Only used to change the attribute value.
+        In most cases you want to use current_value instead.
+        """
         return self._data["target_value"]
 
     @property
@@ -170,9 +185,16 @@ class HomeeAttribute:
 
         return []
 
+    def set_data(self, data: str):
+        """Update data of the attribute."""
+        self._data = data
+
 
 class HomeeNode:
+    """Representation of a node in Homee."""
+
     def __init__(self, data: dict) -> None:
+        """Initialize a Homee node."""
         self._data = data
         self.attributes: list[HomeeAttribute] = []
         for a in self.attributes_raw:
@@ -199,6 +221,7 @@ class HomeeNode:
 
     @property
     def profile(self) -> int:
+        """The NodeProfile of this node."""
         return self._data["profile"]
 
     @property
@@ -215,6 +238,7 @@ class HomeeNode:
 
     @property
     def protocol(self) -> int:
+        """The network protocol of the node."""
         return self._data["protocol"]
 
     @property
@@ -223,6 +247,7 @@ class HomeeNode:
 
     @property
     def state(self) -> int:
+        """State of availability."""
         return self._data["state"]
 
     @property
@@ -239,10 +264,12 @@ class HomeeNode:
 
     @property
     def cube_type(self) -> int:
+        """Type of the Homee cube the node is part of."""
         return self._data["cube_type"]
 
     @property
     def note(self) -> str:
+        """Text Note describing the node."""
         return unquote(self._data["note"])
 
     @property
@@ -251,6 +278,7 @@ class HomeeNode:
 
     @property
     def phonetic_name(self) -> str:
+        """Name of the node."""
         return unquote(self._data["phonetic_name"])
 
     @property
@@ -263,25 +291,35 @@ class HomeeNode:
 
     @property
     def attribute_map(self) -> dict | None:
+        """Dict containing all attributes with attributeType as key."""
         return self._attribute_map
 
     @property
     def attributes_raw(self) -> list[dict]:
+        """Return raw JSON of all the node's attributes."""
         return self._data["attributes"]
 
-    def get_attribute_index(self, attributeId: int) -> int:
+    def set_data(self, data: str) -> None:
+        """Update data of the node."""
+        self._data = data
+
+    def get_attribute_index(self, attribute_id: int) -> int:
+        """Find and return attribute for a given index."""
         return next(
-            (i for i, a in enumerate(self.attributes) if a.id == attributeId), -1
+            (i for i, a in enumerate(self.attributes) if a.id == attribute_id), -1
         )
 
-    def get_attribute_by_type(self, type: int) -> HomeeAttribute:
-        return self._attribute_map[type]
+    def get_attribute_by_type(self, attribute_type: int) -> HomeeAttribute:
+        """Find and return attribute by attributeType."""
+        return self._attribute_map[attribute_type]
 
-    def get_attribute_by_id(self, attributeId: int) -> HomeeAttribute:
-        index = self.get_attribute_index(attributeId)
+    def get_attribute_by_id(self, attribute_id: int) -> HomeeAttribute:
+        """Find and return attribute for a given id."""
+        index = self.get_attribute_index(attribute_id)
         return self.attributes[index] if index != -1 else None
 
     def add_on_changed_listener(self, listener: Callable) -> Callable:
+        """Add on_changed listener to node."""
         self._on_changed_listeners.append(listener)
 
         def remove_listener():
@@ -290,16 +328,31 @@ class HomeeNode:
         return remove_listener
 
     def _update_attribute(self, attribute_data: dict):
+        # TODO: Remove in a future release.
+        _LOGGER.warning(
+            "_update_attribute() is deprecated - use update_attribute() instead"
+        )
+        self.update_attribute(attribute_data)
+
+    def update_attribute(self, attribute_data: dict):
+        """Update a single attribute of a node."""
         attribute = self.get_attribute_by_id(attribute_data["id"])
         if attribute is not None:
-            attribute.raw_data_data = attribute_data
-            result = [
-                listener(self, attribute) for listener in self._on_changed_listeners
-            ]
+            attribute.set_data = attribute_data
+            for listener in self._on_changed_listeners:
+                listener(self, attribute)
 
     def _update_attributes(self, attributes: list[dict]):
+        # TODO: Remove in a future release.
+        _LOGGER.warning(
+            "_update_attributes() is deprecated - use update_attributes() instead"
+        )
+        self.update_attributes(attributes)
+
+    def update_attributes(self, attributes: list[dict]):
+        """Update the given attributes."""
         for attr in attributes:
-            self._update_attribute(attr)
+            self.update_attribute(attr)
 
     def _remap_attributes(self):
         # TODO: Remove in a future release.
@@ -319,16 +372,21 @@ class HomeeNode:
 
 
 class HomeeGroup:
+    """Representation of a Homee group."""
+
     def __init__(self, data) -> None:
+        """Initialize a Homee group."""
         self._data = data
         self.nodes: list[HomeeNode] = []
 
     @property
     def id(self) -> int:
+        """Id of the group, unique in Homee."""
         return self._data["id"]
 
     @property
     def name(self) -> str:
+        """Decoded user given name of the group."""
         return unquote(self._data["name"])
 
     @property
@@ -357,6 +415,7 @@ class HomeeGroup:
 
     @property
     def note(self) -> str:
+        """Note describing the group."""
         return self._data["note"]
 
     @property
@@ -367,53 +426,71 @@ class HomeeGroup:
     def owner(self) -> int:
         return self._data["owner"]
 
+    def set_data(self, data: str) -> None:
+        """Update data of the group."""
+        self._data = data
+
 
 class HomeeSettings:
+    """Representation of the settings object passed by Homee."""
+
     def __init__(self, data: dict) -> None:
+        """Initialize settings."""
         self._data = data
 
     @property
     def address(self) -> str:
+        """Street set by user."""
         return self._data["address"]
 
     @property
     def city(self) -> str:
+        """City set by user."""
         return self._data["city"]
 
     @property
     def zip(self) -> str:
+        """Zip code set by user."""
         return self._data["zip"]
 
     @property
     def state(self) -> str:
+        """State set by user."""
         return self._data["state"]
 
     @property
     def latitude(self) -> float:
+        """Latitude of set position of Homee."""
         return self._data["latitude"]
 
     @property
     def longitude(self) -> float:
+        """Longitude of set position of Homee."""
         return self._data["longitude"]
 
     @property
     def country(self) -> str:
+        """Country set by user."""
         return self._data["country"]
 
     @property
     def language(self) -> str:
+        """Frontend language."""
         return self._data["language"]
 
     @property
     def remote_access(self) -> int:
+        """Remote access enabled or not."""
         return self._data["remote_access"]
 
     @property
     def beta(self) -> int:
+        """Is user accepting beta releases of firmware."""
         return self._data["beta"]
 
     @property
     def webhooks_key(self) -> str:
+        """Key used for webhooks."""
         return self._data["webhooks_key"]
 
     @property
@@ -422,18 +499,22 @@ class HomeeSettings:
 
     @property
     def polling_interval(self) -> float:
+        """Standard polling interval set in Homee."""
         return self._data["polling_interval"]
 
     @property
     def timezone(self) -> str:
+        """Timezone of Homee."""
         return self._data["timezone"]
 
     @property
     def enable_analytics(self) -> int:
+        """Send analytical data back home."""
         return self._data["enable_analytics"]
 
     @property
     def homee_name(self) -> str:
+        """Decoded name of Homee."""
         return unquote(self._data["homee_name"])
 
     @property
@@ -490,6 +571,7 @@ class HomeeSettings:
 
     @property
     def cubes(self) -> list[dict]:
+        """List of cubes attached to this Homee."""
         return self._data["cubes"]
 
     @property
@@ -498,11 +580,15 @@ class HomeeSettings:
 
 
 class HomeeRelationship:
+    """Representation of a Homee relationship."""
+
     def __init__(self, data):
+        """Initialize the relationship."""
         self._data = data
 
     @property
     def id(self) -> int:
+        """Id unique to this Homee."""
         return self._data["id"]
 
     @property
@@ -520,6 +606,10 @@ class HomeeRelationship:
     @property
     def order(self) -> int:
         return self._data["order"]
+
+    def set_data(self, data: str) -> None:
+        """Update data of the relationship."""
+        self._data = data
 
 
 # JSON to Python regex:

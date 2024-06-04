@@ -1,47 +1,48 @@
+"""Library for interacting with the homee smart home/home automation platform."""
+
 import asyncio
+from datetime import datetime
 import hashlib
 import json
+import logging
+import re
+
 import aiohttp
 from aiohttp.helpers import BasicAuth
 import websockets
-from datetime import datetime
+
 from .const import DeviceApp, DeviceOS, DeviceType
-from .model import (
-    HomeeGroup,
-    HomeeNode,
-    HomeeRelationship,
-    HomeeSettings,
-)
-import re
-import logging
+from .model import HomeeGroup, HomeeNode, HomeeRelationship, HomeeSettings
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class Homee:
+    """Representation of a Homee system."""
+
     def __init__(
         self,
         host: str,
         user: str,
         password: str,
         device: str = "pymee",
-        pingInterval: int = 30,
-        reconnectInterval: int = 5,
+        ping_interval: int = 30,
+        reconnect_interval: int = 5,
         reconnect: bool = True,
-        maxRetries: int = 5,
-        loop: asyncio.AbstractEventLoop = None,
+        max_retries: int = 5
     ) -> None:
+        """Initialize the virtual Homee."""
         self.host = host
         self.user = user
         self.password = password
 
         self.device = device
-        self.pingInterval = pingInterval
-        self.shouldReconnect = reconnect
-        self.reconnectInterval = reconnectInterval
-        self.maxRetries = maxRetries
+        self.ping_interval = ping_interval
+        self.should_reconnect = reconnect
+        self.reconnect_interval = reconnect_interval
+        self.max_retries = max_retries
 
-        self.deviceId = str(device).lower().replace(" ", "-")
+        self.device_id = str(device).lower().replace(" ", "-")
 
         self.settings: HomeeSettings = None
         self.nodes: list[HomeeNode] = []
@@ -51,17 +52,17 @@ class Homee:
         self.expires = 0
         self.connected = False
         self.retries = 0
-        self.shouldClose = False
+        self.should_close = False
 
         self._message_queue = asyncio.Queue()
         self._connected_event = asyncio.Event()
         self._disconnected_event = asyncio.Event()
 
     async def get_access_token(self):
-        """Asynchronously attempts to get an access token from the homee host using username and password."""
+        """Try asynchronously to get an access token from homee using username and password."""
 
         # Check if current token is still valid
-        if self.token != None and self.expires > datetime.now().timestamp():
+        if self.token is not None and self.expires > datetime.now().timestamp():
             return self.token
 
         client = aiohttp.ClientSession()
@@ -72,7 +73,7 @@ class Homee:
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         data = {
             "device_name": self.device,
-            "device_hardware_id": self.deviceId,
+            "device_hardware_id": self.device_id,
             "device_os": DeviceOS.LINUX,
             "device_type": DeviceType.NONE,
             "device_app": DeviceApp.HOMEE,
@@ -87,9 +88,9 @@ class Homee:
             raise e
 
         try:
-            reqText = await req.text()
+            req_text = await req.text()
             regex = r"^access_token=([0-z]+)&.*&expires=(\d+)$"
-            matches = re.match(regex, reqText)
+            matches = re.match(regex, req_text)
 
             self.token = matches[1]
             self.expires = datetime.now().timestamp() + int(matches[2])
@@ -104,24 +105,28 @@ class Homee:
         return self.token
 
     async def run(self):
-        """Connects to homee after acquiring an access token and runs until the connection is closed. Should be used in combination with asyncio.create_task."""
+        """Connect to homee after acquiring an access token and runs until the connection is closed.
 
-        self.shouldClose = False
+        Should be used in combination with asyncio.create_task.
+        """
+
+        self.should_close = False
         initial_connect = True
 
         # Reconnect loop to avoid recursive reconnects
         while initial_connect or (
-            not self.shouldClose
-            and self.shouldReconnect
-            and self.retries < self.maxRetries
+            not self.should_close
+            and self.should_reconnect
+            and self.retries < self.max_retries
         ):
             initial_connect = False
 
             # Sleep after reconnect
             if self.retries > 0:
-                await asyncio.sleep(self.reconnectInterval * self.retries)
+                await asyncio.sleep(self.reconnect_interval * self.retries)
                 _LOGGER.info(
-                    "Attempting to reconnect in %s seconds", self.reconnectInterval * self.retries
+                    "Attempting to reconnect in %s seconds",
+                    self.reconnect_interval * self.retries,
                 )
 
             try:
@@ -134,15 +139,18 @@ class Homee:
             await self.open_ws()
 
         # Handle max retries
-        if self.retries >= self.maxRetries:
+        if self.retries >= self.max_retries:
             await self.on_max_retries()
 
     def start(self):
-        """Wraps run() with asyncio.create_task() and returns the resulting task."""
+        """Wrap run() with asyncio.create_task() and returns the resulting task."""
         return asyncio.create_task(self.run())
 
     async def open_ws(self):
-        """Opens the websocket connection assuming an access token was already received. Runs until connection is closed again."""
+        """Open the websocket connection assuming an access token was already received.
+
+        Runs until connection is closed again.
+        """
 
         _LOGGER.info("Opening websocket")
 
@@ -156,7 +164,7 @@ class Homee:
             ) as ws:
                 await self._ws_on_open()
 
-                while (not self.shouldClose) and self.connected:
+                while (not self.should_close) and self.connected:
                     try:
                         receive_task = asyncio.ensure_future(
                             self._ws_receive_handler(ws)
@@ -174,15 +182,14 @@ class Homee:
                             task.cancel()
 
                         # Check if we finished with an exception
-                        for task in done:
-                            exceptions.append(task.exception())
+                        exceptions.extend(task.exception() for task in done)
 
                         if exceptions and exceptions[0] is not None:
                             raise exceptions[0]
 
                     except websockets.exceptions.ConnectionClosedError as e:
                         self.connected = False
-                        await self.on_disconnected()
+                        await self.on_disconnected(e)
         except websockets.exceptions.WebSocketException as e:
             await self._ws_on_error(e)
         except TimeoutError:
@@ -200,17 +207,17 @@ class Homee:
         except websockets.exceptions.ConnectionClosedOK:
             return
         except websockets.exceptions.ConnectionClosedError as e:
-            if not self.shouldClose:
+            if not self.should_close:
                 self.connected = False
                 raise e
 
     async def _ws_send_handler(self, ws: websockets.WebSocketClientProtocol):
         try:
             msg = await self._message_queue.get()
-            if self.connected and not self.shouldClose:
+            if self.connected and not self.should_close:
                 await ws.send(msg)
         except websockets.exceptions.ConnectionClosed as e:
-            if not self.shouldClose:
+            if not self.should_close:
                 self.connected = False
                 raise e
 
@@ -233,7 +240,7 @@ class Homee:
 
     async def _ws_on_close(self):
         """Websocket on_close callback."""
-        # if not self.shouldClose and self.retries <= 1:
+        # if not self.should_close and self.retries <= 1:
 
         if self.connected:
             self.connected = False
@@ -249,7 +256,7 @@ class Homee:
     async def send(self, msg: str):
         """Send a raw string message to homee."""
 
-        if not self.connected or self.shouldClose:
+        if not self.connected or self.should_close:
             return
 
         await self._message_queue.put(msg)
@@ -262,23 +269,23 @@ class Homee:
     def disconnect(self):
         """Disconnect from homee by closing the websocket connection."""
 
-        self.shouldClose = True
+        self.should_close = True
 
     async def _handle_message(self, msg: dict):
-        """Internal handling of incoming homee messages."""
+        """Handle incoming homee messages."""
 
-        msgType = None
+        msg_type = None
 
         try:
-            msgType = list(msg)[0]
-        except:
+            msg_type = list(msg)[0]
+        except TypeError:
             _LOGGER.warning("Invalid message: %s", msg)
             await self.on_error()
             return
 
         _LOGGER.debug(msg)
 
-        if msgType == "all":
+        if msg_type == "all":
             self.settings = HomeeSettings(msg["all"]["settings"])
 
             # Create / Update nodes
@@ -300,47 +307,46 @@ class Homee:
             self._remap_relationships()
             self._connected_event.set()
 
-        elif msgType == "attribute":
+        elif msg_type == "attribute":
             await self._handle_attribute_change(msg["attribute"])
-        elif msgType == "groups":
+        elif msg_type == "groups":
             for data in msg["groups"]:
                 self._update_or_create_group(data)
-        elif msgType == "node":
+        elif msg_type == "node":
             self._update_or_create_node(msg["node"])
-        elif msgType == "nodes":
+        elif msg_type == "nodes":
             for data in msg["nodes"]:
                 self._update_or_create_node(data)
-        elif msgType == "relationships":
+        elif msg_type == "relationships":
             self._update_or_create_relationships(msg["relationships"])
             self._remap_relationships()
-        elif msgType == "group":
+        elif msg_type == "group":
             self._update_or_create_group(msg["group"])
-        elif msgType == "relationship":
+        elif msg_type == "relationship":
             self._update_or_create_relationship(msg["relationship"])
         else:
-            _LOGGER.info("Unknown/Unsupported message type: %s.\nMessage: %s", msgType, msg)
+            _LOGGER.info(
+                "Unknown/Unsupported message type: %s.\nMessage: %s", msg_type, msg
+            )
 
         await self.on_message(msg)
 
     async def _handle_attribute_change(self, attribute_data: dict):
-        """Internal handling of an attribute changed message."""
+        """Handle an attribute changed message."""
 
-        _LOGGER.info("Updating attribute %s", attribute_data['id'])
+        _LOGGER.info("Updating attribute %s", attribute_data["id"])
 
-
-        attrNodeId = attribute_data["node_id"]
-        node = self.get_node_by_id(attrNodeId)
-        if node != None:
-            node._update_attribute(attribute_data)
+        attr_node_id = attribute_data["node_id"]
+        node = self.get_node_by_id(attr_node_id)
+        if node is not None:
+            node.update_attribute(attribute_data)
             await self.on_attribute_updated(attribute_data, node)
 
-
-
     def _update_or_create_node(self, node_data: dict):
-        existingNode = self.get_node_by_id(node_data["id"])
-        if existingNode != None:
-            existingNode._data = node_data
-            existingNode._update_attributes(node_data["attributes"])
+        existing_node = self.get_node_by_id(node_data["id"])
+        if existing_node is not None:
+            existing_node.set_data(node_data)
+            existing_node.update_attributes(node_data["attributes"])
         else:
             self.nodes.append(HomeeNode(node_data))
             self._remap_relationships()
@@ -348,7 +354,7 @@ class Homee:
     def _update_or_create_group(self, data: dict):
         group = self.get_group_by_id(data["id"])
         if group is not None:
-            group._data = data
+            group.set_data(data)
         else:
             self.groups.append(HomeeGroup(data))
             self._remap_relationships()
@@ -359,7 +365,7 @@ class Homee:
         )
 
         if relationship is not None:
-            relationship._data = data
+            relationship.set_data(data)
         else:
             self.relationships.append(HomeeRelationship(data))
         self._remap_relationships()
@@ -368,11 +374,8 @@ class Homee:
         if len(self.relationships) <= 0:
             self.relationships = list(map(lambda r: HomeeRelationship(r), data))
         else:
-
             for relationship_data in data:
                 self._update_or_create_relationship(relationship_data)
-
-
 
     def _remap_relationships(self):
         """Remap the relationships between nodes and groups defined by the relationships list."""
@@ -391,52 +394,52 @@ class Homee:
                 node.groups.append(group)
                 group.nodes.append(node)
 
-    def get_node_index(self, nodeId: int) -> int:
-        """Returns the index of the node with the given id or -1 if no node with the given id exists."""
-        return next((i for i, node in enumerate(self.nodes) if node.id == nodeId), -1)
+    def get_node_index(self, node_id: int) -> int:
+        """Return the index of the node with the given id or -1 if none exists."""
+        return next((i for i, node in enumerate(self.nodes) if node.id == node_id), -1)
 
-    def get_node_by_id(self, nodeId: int) -> HomeeNode:
-        """Returns the node with the given id or `None` if no node with the given id exists."""
-        index = self.get_node_index(nodeId)
+    def get_node_by_id(self, node_id: int) -> HomeeNode:
+        """Return the node with the given id or `None` if none exists."""
+        index = self.get_node_index(node_id)
         return self.nodes[index] if index != -1 else None
 
-    def get_group_index(self, groupId: int) -> int:
-        """Returns the index of the group with the given id or -1 if no group with the given id exists."""
+    def get_group_index(self, group_id: int) -> int:
+        """Return the index of the group with the given id or -1 if none exists."""
         return next(
-            (i for i, group in enumerate(self.groups) if group.id == groupId), -1
+            (i for i, group in enumerate(self.groups) if group.id == group_id), -1
         )
 
-    def get_group_by_id(self, groupId: int) -> HomeeGroup:
-        """Returns the group with the given id or `None` if no group with the given id exists."""
-        index = self.get_group_index(groupId)
+    def get_group_by_id(self, group_id: int) -> HomeeGroup:
+        """Return the group with the given id or `None` if no group with the given id exists."""
+        index = self.get_group_index(group_id)
         return self.groups[index] if index != -1 else None
 
-    async def set_value(self, deviceId: int, attributeId: int, value: float):
+    async def set_value(self, device_id: int, attribute_id: int, value: float):
         """Set the target value of an attribute of a device."""
 
         _LOGGER.info(
-            "Set value: Device: %s Attribute: %s To: %s", deviceId, attributeId, value
+            "Set value: Device: %s Attribute: %s To: %s", device_id, attribute_id, value
         )
         await self.send(
-            f"PUT:/nodes/{deviceId}/attributes/{attributeId}?target_value={value}"
+            f"PUT:/nodes/{device_id}/attributes/{attribute_id}?target_value={value}"
         )
 
-    async def update_node(self, nodeId: int):
+    async def update_node(self, node_id: int):
         """Request current data for a node."""
-        _LOGGER.info("Request current data for node %s", nodeId)
-        await self.send(f"GET:/nodes/{nodeId}/")
+        _LOGGER.info("Request current data for node %s", node_id)
+        await self.send(f"GET:/nodes/{node_id}/")
 
-    async def update_attribute(self, nodeId: int, attributeId: int):
-        """Request current data for an attribute"""
+    async def update_attribute(self, node_id: int, attribute_id: int):
+        """Request current data for an attribute."""
         _LOGGER.info(
-            "Request current data for attribute %s of device %s", attributeId, nodeId
+            "Request current data for attribute %s of device %s", attribute_id, node_id
         )
-        await self.send(f"GET:/nodes/{nodeId}/attributes/{attributeId}")
+        await self.send(f"GET:/nodes/{node_id}/attributes/{attribute_id}")
 
-    async def play_homeegram(self, homeegramId: int):
+    async def play_homeegram(self, homeegram_id: int):
         """Invoke a homeegram."""
 
-        await self.send(f"PUT:homeegrams/{homeegramId}?play=1")
+        await self.send(f"PUT:homeegrams/{homeegram_id}?play=1")
 
     @property
     def url(self):
@@ -451,44 +454,56 @@ class Homee:
         return f"ws://{self.host}:7681"
 
     def wait_until_connected(self):
-        """Returns a coroutine that runs until a connection has been established and the initial data has been received."""
+        """Return a coroutine that runs until a connection has been established."""
         return self._connected_event.wait()
 
     def wait_until_disconnected(self):
-        """Returns a coroutine that runs until the connection has been closed."""
+        """Return a coroutine that runs until the connection has been closed."""
         return self._disconnected_event.wait()
 
     async def on_reconnect(self):
-        """Called right before a reconnection attempt is started."""
+        """Execute right before a reconnection attempt is started."""
         _LOGGER.info("Homee %s Reconnecting", self.device)
 
     async def on_max_retries(self):
-        """Called if the maximum amount of retries was reached."""
-        _LOGGER.warning("Could not reconnect Homee %s after %s retries", self.device, self.maxRetries)
+        """Execute if the maximum amount of retries was reached."""
+        _LOGGER.warning(
+            "Could not reconnect Homee %s after %s retries",
+            self.device,
+            self.max_retries,
+        )
 
     async def on_connected(self):
-        """Called once the websocket connection has been established."""
+        """Execute once the websocket connection has been established."""
         if self.retries > 0:
-            _LOGGER.warning("Homee %s Reconnected after %s retries", self.device, self.retries)
+            _LOGGER.warning(
+                "Homee %s Reconnected after %s retries", self.device, self.retries
+            )
 
-    async def on_disconnected(self):
-        """Called after the websocket connection has been closed."""
-        if not self.shouldClose:
-            _LOGGER.warning("Homee %s Disconnected", self.device)
+    async def on_disconnected(self, error=None):
+        """Execute after the websocket connection has been closed."""
+        if not self.should_close:
+            _LOGGER.warning("Homee %s Disconnected. Error: %s", self.device, error)
 
-    async def on_error(self, error: str = None):
-        """Called after an error has occurred."""
+    async def on_error(self, error: str | None = None):
+        """Execute after an error has occurred."""
         _LOGGER.error("An error occurred: %s", error)
 
     async def on_message(self, msg: dict):
-        """Called when the websocket receives a message. The message is automatically parsed from json into a dictionary."""
+        """Execute when the websocket receives a message.
+
+        The message is automatically parsed from json into a dictionary.
+        """
 
     async def on_attribute_updated(self, attribute_data: dict, node: HomeeNode):
-        """Called when an 'attribute' message was received and an attribute was updated. Contains the parsed json attribute data and the corresponding node instance."""
+        """Execute when an 'attribute' message was received and an attribute was updated.
+
+        Contains the parsed json attribute data and the corresponding node instance.
+        """
 
 
 class HomeeException(Exception):
-    """Base class for all errors thrown by this library"""
+    """Base class for all errors thrown by this library."""
 
 
 class AuthenticationFailedException(HomeeException):
