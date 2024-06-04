@@ -1,5 +1,8 @@
 from collections.abc import Callable
 from urllib.parse import unquote
+import logging
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class HomeeAttributeOptions:
@@ -48,7 +51,7 @@ class HomeeAttributeOptions:
 
     @property
     def reverse_control_ui(self) -> bool:
-        """Do up/down controls work in opposite direction?"""
+        """Do up/down controls work in opposite direction."""
         if "reverse_control_ui" in self._data:
             return self._data["reverse_control_ui"]
 
@@ -58,6 +61,11 @@ class HomeeAttributeOptions:
 class HomeeAttribute:
     def __init__(self, data: dict) -> None:
         self._data = data
+
+    @property
+    def raw_data(self):
+        """Return the raw JSON data of the Attribute."""
+        return self._data
 
     @property
     def id(self) -> int:
@@ -71,7 +79,7 @@ class HomeeAttribute:
 
     @property
     def instance(self) -> int:
-        """TODO"""
+        """If more than one attribute of same type is present, they are numbered starting at 1."""
         return self._data["instance"]
 
     @property
@@ -157,10 +165,10 @@ class HomeeAttribute:
     @property
     def options(self) -> HomeeAttributeOptions:
         """The options collection of the attribute. Optional, not on every attribute."""
-        try:
+        if "options" in self._data:
             return HomeeAttributeOptions(self._data["options"])
-        except:
-            return []
+
+        return []
 
 
 class HomeeNode:
@@ -170,9 +178,14 @@ class HomeeNode:
         for a in self.attributes_raw:
             self.attributes.append(HomeeAttribute(a))
         self._attribute_map: dict = None
-        self._remap_attributes()
-        self._onChangedListeners = []
+        self.remap_attributes()
+        self._on_changed_listeners = []
         self.groups: list[HomeeGroup] = []
+
+    @property
+    def raw_data(self):
+        """Return Raw JSON Data of the node."""
+        return self._data
 
     @property
     def id(self) -> int:
@@ -269,19 +282,19 @@ class HomeeNode:
         return self.attributes[index] if index != -1 else None
 
     def add_on_changed_listener(self, listener: Callable) -> Callable:
-        self._onChangedListeners.append(listener)
+        self._on_changed_listeners.append(listener)
 
         def remove_listener():
-            self._onChangedListeners.remove(listener)
+            self._on_changed_listeners.remove(listener)
 
         return remove_listener
 
     def _update_attribute(self, attribute_data: dict):
         attribute = self.get_attribute_by_id(attribute_data["id"])
         if attribute is not None:
-            attribute._data = attribute_data
+            attribute.raw_data_data = attribute_data
             result = [
-                listener(self, attribute) for listener in self._onChangedListeners
+                listener(self, attribute) for listener in self._on_changed_listeners
             ]
 
     def _update_attributes(self, attributes: list[dict]):
@@ -289,6 +302,14 @@ class HomeeNode:
             self._update_attribute(attr)
 
     def _remap_attributes(self):
+        # TODO: Remove in a future release.
+        _LOGGER.warning(
+            "_remap_attributes() is deprecated - use remap_attributes() instead"
+        )
+        self.remap_attributes()
+
+    def remap_attributes(self):
+        """Remap the node's attributes."""
         if self._attribute_map is not None:
             self._attribute_map.clear()
         else:
