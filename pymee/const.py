@@ -548,6 +548,10 @@ class AttributeType:
     GAS_ALARM_STATE = 387
     GAS_CONCENTRATION = 388
     HOST_NAME = 389
+    BRIGHTNESS_LEVEL = 390
+    FORECAST_LOCAL_HUMIDITY = 391
+    FORECAST_LOCAL_WINDSPEED = 392
+    FORECAST_LOCAL_GUSTSPEED = 393
 
 
 class AttributeState:
@@ -585,7 +589,7 @@ class HomeegramState:
     NO_ACTIONS = 4
 
 
-class ErrorCode:
+class WarningCode:
     CUBE_ADDED = 100
     CUBE_REMOVED = 101
     CUBE_IS_MISSING = 102
@@ -743,7 +747,7 @@ class UserRole:
     CAUSEROLE_EXTERNAL_SERVICE = 5
 
 
-class PlanType:
+class TriggerType:
     NONE = 0
     TIME = 1
     ATTRIBUTE = 2
@@ -753,17 +757,23 @@ class PlanType:
     CELESTIAL = 6
     PLAN = 7
     GROUP = 8
+    USER = 9
 
 
-class ConditionOperator:
+class TriggerOperator:
     NONE = 0
     RISE_ABOVE = 1
     FALL_BELOW = 2
     BECOME_EQUAL = 3
     ANY_CHANGE_GREATER_THAN = 4
 
+class TriggerOperand:
+    NONE = 0
+    VALUE = 1
+    ATTRIBUTE = 2
 
-class ActionHomeegramEvent:
+
+class HomeegramEvent:
     NONE = 0
     ENABLED = 1
     DISABLED = 2
@@ -771,14 +781,14 @@ class ActionHomeegramEvent:
     STOPPED = 4
 
 
-class ActionPlan:
+class TriggerPlan:
     NONE = 0
     ENABLED = 1
     DISABLED = 2
     VARIABLE_ACTIVE = 3
 
 
-class PlanType:
+class ConditionType:
     NONE = 0
     TIME = 1
     ATTRIBUTE = 2
@@ -797,6 +807,10 @@ class ConditionOperator:
     GREATER_THAN = 5
     NOT_EQUAL = 6
 
+class ConditionOperand:
+    NONE = 0
+    VALUE = 1
+    ATTRIBUTE = 2
 
 class ConditionCheckMoment:
     NONE = 0
@@ -805,7 +819,7 @@ class ConditionCheckMoment:
     START_AND_END = 3
 
 
-class ActionHomeegramEvent:
+class ConditionHomeegramEvent:
     NONE = 0
     ENABLED = 1
     DISABLED = 2
@@ -813,14 +827,14 @@ class ActionHomeegramEvent:
     STOPPED = 4
 
 
-class ActionPlan:
+class ConditionPlan:
     NONE = 0
     ENABLED = 1
     DISABLED = 2
     VARIABLE_ACTIVE = 3
 
 
-class PlanType:
+class ActionType:
     NONE = 0
     ATTRIBUTE = 1
     TTS = 2
@@ -864,7 +878,7 @@ class ActionPlan:
     OVERRIDE = 3
 
 
-class PlanType:
+class CelestialType:
     SUNRISE = 1
     SUNSET = 2
 
@@ -968,6 +982,12 @@ class Service:
 class BackupDestination:
     NONE = 0
     FTP = 1
+    DROPBOX = 2
+
+
+class BackupDestinationBitmask:
+    DROPBOX = 6
+    FTP = 7
 
 
 class HistoryDestination:
@@ -975,7 +995,7 @@ class HistoryDestination:
     FTP = 1
 
 
-class PlanEventType:
+class DiaryEventType:
     NONE = 0
     NODE_STATE_CHANGED = 1
     NODE_ATTRIBUTE_CHANGE_SENT = 2
@@ -1002,8 +1022,6 @@ class PlanEventType:
     SYSTEM_PROXY_CONNECTION_LOST = 313
     SYSTEM_WEATHER_UPDATE_SUCCESSFUL = 314
     SYSTEM_WEATHER_UPDATE_FAILED = 315
-    WEBHOOK_SENT = 400
-    PUSH_SENT = 500
     SYSTEM_BACKUP_CREATION_SUCCESSFUL = 316
     SYSTEM_BACKUP_CREATION_FAILED = 317
     SYSTEM_BACKUP_EXPORT_SUCCESSFUL = 318
@@ -1013,6 +1031,16 @@ class PlanEventType:
     SYSTEM_CUBE_UPDATE_STARTED = 322
     SYSTEM_CUBE_UPDATE_SUCCESSFUL = 323
     SYSTEM_CUBE_UPDATE_FAILED = 324
+    ELECTRICITY_PRICE_UPDATE_SUCCESSFUL = 325
+    ELECTRICITY_PRICE_UPDATE_FAILED = 326
+    ENERGY_CONSUMPTION_UPDATE_SUCCESSFUL = 327
+    ENERGY_CONSUMPTION_UPDATE_FAILED = 328
+    SYSTEM_USER_PRESENCE_CHANGED = 329
+    WEBHOOK_SENT = 400
+    PUSH_SENT = 500
+    PUSH_SENT_FAILED = 501
+    MAIL_SENT = 510
+    MAIL_SENT_FAILED = 511
     PLAN_ACTIVATED = 600
     PLAN_DEACTIVATED = 601
     PLAN_SCHEDULE_TRIGGERED = 602
@@ -1020,6 +1048,10 @@ class PlanEventType:
     PLAN_SCHEDULE_SKIPPED = 604
     PLAN_EVENT_TRIGGERED = 605
     PLAN_TEMPORARY_OVERRIDEN = 606
+    WIND_MONITORING_LINK_SUCCESSFUL = 650
+    WIND_MONITORING_LINK_FAILED = 651
+    WIND_MONITORING_UNLINK_SUCCESSFUL = 652
+    WIND_MONITORING_UNLINK_FAILED = 653
     MLPRESENCE_DETECTION_ACTIVATED = 700
     MLPRESENCE_DETECTION_DEACTIVATED = 701
     MLPRESENCE_DETECTION_RESET = 702
@@ -1049,12 +1081,22 @@ class DiaryCauseType:
     PLAN = 50
     PLAN_SCHEDULE = 51
     PLAN_EVENT = 52
-    AI = 60
+    GLOBAL_WATCHDOG = 60
+    EMAIL_LIMIT_REACHED = 70
+    EMAIL_UNVERIFIED = 71
+    EMAIL_VERIFY = 72
 
 
 class PlanType:
     NONE = 0
     HEATING = 1
+    Energy = 2
+    OnOff = 3
+    PRESENCE_SIMULATION = 4
+    ELECTRICAL_HEATING = 5
+    WIND_MONITORING = 50
+    SUN_AUTOMATION = 51
+    DAWN_AUTOMATION = 52
 
 
 class PlanEventType:
@@ -1062,6 +1104,21 @@ class PlanEventType:
     OPEN_WINDOW_DETECTION = 1
     AWAY_MODE = 2
     VACATION_MODE = 3
+    WINDNOALARM = 4
+    WINDALARM = 5
+    DARK = 6
+    BRIGHT = 7
+    RELEASE_TEMPERATURE = 8
+    AT_HOME_MODE = 9
+    SLEEPIN_GMODE = 10
+    MORNING = 11
+    EVENING = 12
+
+class PlansTemplate:
+    NONE = 0
+    HEATING = 1
+    HEATING_EMPTY = 2
+    WIND_MONITORING = 50
 
 
 class PlanVariableType:
@@ -1073,5 +1130,7 @@ class PlanVariableType:
     TEMPERATURE_AWAY = 5
     TEMPERATURE_WINDOW = 6
     TEMPERATURE_VACATION = 7
+    WIND_NO_ALARM = 50
+    WIND_ALARM = 51
     GENERIC_ON_OFF_PLUG = 100
     TEMPERATURE_ON_OFF_PLUG = 101
