@@ -1,4 +1,9 @@
-class NodeProfile:
+"""Enumerables for the values Homee uses."""
+from enum import IntEnum, unique
+
+
+@unique
+class NodeProfile(IntEnum):
     NONE = 0
     HOMEE = 1
     ON_OFF_PLUG = 10
@@ -96,7 +101,7 @@ class NodeProfile:
     HEATING_SYSTEM = 3028
     WARM_WATER_CIRCUIT = 3029
     HEATING_CIRCUIT = 3030
-    AIR_Quality_SENSOR = 3031
+    AIR_QUALITY_SENSOR = 3031
     WIFI_ROOM_THERMOSTAT = 3032
     WIFI_RADIATOR_THERMOSTAT = 3033
     MOTION_DETECTOR_WITH_TEMPERATURE_BRIGHTNESS_AND_HUMIDITY_SENSOR = 4010
@@ -147,37 +152,39 @@ class NodeProfile:
     DISHWASHER = 6002
 
 
-class NodeProtocol:
+@unique
+class NodeProtocol(IntEnum):
     NONE = 0
     ZWAVE = 1
     ZIG_BEE = 2
     EN_OCEAN = 3
-    WMBUS = 4
+    WM_BUS = 4
     HOMEMATIC = 5
     KNXRF = 6
     INOVA = 7
-    HTTPAVM = 8
-    HTTPNETATMO = 9
-    HTTPKOUBACHI = 10
-    HTTPNEST = 11
-    IOCUBE = 12
-    HTTPCCU2 = 13
-    HTTPUPN_P = 14
-    HTTPNUKI = 15
-    HTTPSEMS = 16
-    SIGMA_ZWAVE = 17
+    HTTP_AVM = 8
+    HTTP_NETATMO = 9
+    HTTP_KOUBACHI = 10
+    HTTP_NEST = 11
+    IO_CUBE = 12
+    HTTP_CCU_2 = 13
+    HTTP_UPN_P = 14
+    HTTP_NUKI = 15
+    HTTP_SEMS = 16
+    ZWAVE_V3 = 17
     LO_RA = 18
     BI_SECUR = 19
-    HTTPWOLF = 20
+    HTTP_WOLF = 20
     EXTERNAL_HOMEE = 21
     WMS = 23
-    HTTPMY_STROM = 24
+    HTTP_MY_STROM = 24
     HTTP_STECA = 25
     MQTT_SHELLY = 27
     ALL = 100
 
 
-class NodeState:
+@unique
+class NodeState(IntEnum):
     NONE = 0
     AVAILABLE = 1
     UNAVAILABLE = 2
@@ -195,7 +202,8 @@ class NodeState:
     FIRMWARE_UPDATE_IN_PROGRESS = 14
 
 
-class AttributeType:
+@unique
+class AttributeType(IntEnum):
     NONE = 0
     ON_OFF = 1
     DIMMING_LEVEL = 2
@@ -554,7 +562,8 @@ class AttributeType:
     FORECAST_LOCAL_GUSTSPEED = 393
 
 
-class AttributeState:
+@unique
+class AttributeState(IntEnum):
     NONE = 0
     NORMAL = 1
     WAITING_FOR_WAKE_UP = 2
@@ -566,7 +575,8 @@ class AttributeState:
     STATE_UNLISTED = 9
 
 
-class AttributeChangedBy:
+@unique
+class AttributeChangedBy(IntEnum):
     NONE = 0
     ITSELF = 1
     USER = 2
@@ -574,14 +584,16 @@ class AttributeChangedBy:
     AI = 6
 
 
-class AttributeBasedOn:
+@unique
+class AttributeBasedOn(IntEnum):
     EVENTS = 1
     INTERVAL = 2
     POLLING = 4
     MANUAL = 8
 
 
-class HomeegramState:
+@unique
+class HomeegramState(IntEnum):
     NONE = 0
     NORMAL = 1
     EXECUTING = 2
@@ -589,7 +601,8 @@ class HomeegramState:
     NO_ACTIONS = 4
 
 
-class WarningCode:
+@unique
+class WarningCode(IntEnum):
     CUBE_ADDED = 100
     CUBE_REMOVED = 101
     CUBE_IS_MISSING = 102
@@ -726,7 +739,8 @@ class WarningCode:
     UNLOCK_FAILED = 1400
 
 
-class ErrorCode:
+@unique
+class ErrorCode(IntEnum):
     MISSING_PARAMETER = 1
     INVALID_FORMAT = 2
     INVALID_PATH = 3
@@ -739,7 +753,8 @@ class ErrorCode:
     CONFLICTING_PARAMETERS = 10
 
 
-class UserRole:
+@unique
+class UserRole(IntEnum):
     SERVICE = 1
     ADMIN = 2
     STANDARD = 3
@@ -747,7 +762,8 @@ class UserRole:
     CAUSEROLE_EXTERNAL_SERVICE = 5
 
 
-class TriggerType:
+@unique
+class TriggerType(IntEnum):
     NONE = 0
     TIME = 1
     ATTRIBUTE = 2
@@ -760,20 +776,23 @@ class TriggerType:
     USER = 9
 
 
-class TriggerOperator:
+@unique
+class TriggerOperator(IntEnum):
     NONE = 0
     RISE_ABOVE = 1
     FALL_BELOW = 2
     BECOME_EQUAL = 3
     ANY_CHANGE_GREATER_THAN = 4
 
-class TriggerOperand:
+@unique
+class TriggerOperand(IntEnum):
     NONE = 0
     VALUE = 1
     ATTRIBUTE = 2
 
 
-class HomeegramEvent:
+@unique
+class HomeegramEvent(IntEnum):
     NONE = 0
     ENABLED = 1
     DISABLED = 2
@@ -781,14 +800,16 @@ class HomeegramEvent:
     STOPPED = 4
 
 
-class TriggerPlan:
+@unique
+class TriggerPlan(IntEnum):
     NONE = 0
     ENABLED = 1
     DISABLED = 2
     VARIABLE_ACTIVE = 3
 
 
-class ConditionType:
+@unique
+class ConditionType(IntEnum):
     NONE = 0
     TIME = 1
     ATTRIBUTE = 2
@@ -798,7 +819,8 @@ class ConditionType:
     GROUP = 6
 
 
-class ConditionOperator:
+@unique
+class ConditionOperator(IntEnum):
     NONE = 0
     EQUAL = 1
     LESS_EQUAL = 2
@@ -807,19 +829,22 @@ class ConditionOperator:
     GREATER_THAN = 5
     NOT_EQUAL = 6
 
-class ConditionOperand:
+@unique
+class ConditionOperand(IntEnum):
     NONE = 0
     VALUE = 1
     ATTRIBUTE = 2
 
-class ConditionCheckMoment:
+@unique
+class ConditionCheckMoment(IntEnum):
     NONE = 0
     START = 1
     END = 2
     START_AND_END = 3
 
 
-class ConditionHomeegramEvent:
+@unique
+class ConditionHomeegramEvent(IntEnum):
     NONE = 0
     ENABLED = 1
     DISABLED = 2
@@ -827,14 +852,16 @@ class ConditionHomeegramEvent:
     STOPPED = 4
 
 
-class ConditionPlan:
+@unique
+class ConditionPlan(IntEnum):
     NONE = 0
     ENABLED = 1
     DISABLED = 2
     VARIABLE_ACTIVE = 3
 
 
-class ActionType:
+@unique
+class ActionType(IntEnum):
     NONE = 0
     ATTRIBUTE = 1
     TTS = 2
@@ -845,14 +872,16 @@ class ActionType:
     PLAN = 7
 
 
-class NotificationStyle:
+@unique
+class NotificationStyle(IntEnum):
     NONE = 0
     PUSH = 1
     SMS = 2
     EMAIL = 3
 
 
-class NotificationClass:
+@unique
+class NotificationClass(IntEnum):
     NONE = 0
     CUBES = 1
     WARNING = 2
@@ -863,7 +892,8 @@ class NotificationClass:
     MLPRESENCE_DETECTION = 7
 
 
-class ActionHomeegramEvent:
+@unique
+class ActionHomeegramEvent(IntEnum):
     NONE = 0
     ENABLE = 1
     DISABLE = 2
@@ -871,19 +901,22 @@ class ActionHomeegramEvent:
     STOP = 4
 
 
-class ActionPlan:
+@unique
+class ActionPlan(IntEnum):
     NONE = 0
     ENABLE = 1
     DISABLE = 2
     OVERRIDE = 3
 
 
-class CelestialType:
+@unique
+class CelestialType(IntEnum):
     SUNRISE = 1
     SUNSET = 2
 
 
-class TimeOfDay:
+@unique
+class TimeOfDay(IntEnum):
     DAY = 1
     NIGHT = 2
     MORNING = 3
@@ -893,7 +926,8 @@ class TimeOfDay:
     MIDNIGHT = 7
 
 
-class DeviceType:
+@unique
+class DeviceType(IntEnum):
     NONE = 0
     PHONE = 1
     TABLET = 2
@@ -901,7 +935,8 @@ class DeviceType:
     BROWSER = 4
 
 
-class DeviceOS:
+@unique
+class DeviceOS(IntEnum):
     NONE = 0
     I_OS = 1
     ANDROID = 2
@@ -911,7 +946,8 @@ class DeviceOS:
     MAC_OS = 6
 
 
-class DeviceApp:
+@unique
+class DeviceApp(IntEnum):
     NONE = 0
     HOMEE = 1
     AFRISOHOME = 2
@@ -926,7 +962,8 @@ class DeviceApp:
     VARIA3 = 13
 
 
-class AttributeHistoryError:
+@unique
+class AttributeHistoryError(IntEnum):
     TIMEOUT = 1
     NO_CONNECTION = 2
     WRONG_HOSTNAME = 3
@@ -935,7 +972,8 @@ class AttributeHistoryError:
     EMPTY = 6
 
 
-class GroupCategory:
+@unique
+class GroupCategory(IntEnum):
     NONE = 0
     LIGHT = 10
     CLIMATE = 11
@@ -946,14 +984,16 @@ class GroupCategory:
     SHUTTER = 16
 
 
-class HomeeMode:
+@unique
+class HomeeMode(IntEnum):
     HOME = 0
     SLEEPING = 1
     AWAY = 2
     VACATION = 3
 
 
-class DashboardGreeting:
+@unique
+class DashboardGreeting(IntEnum):
     PREFIX = 0
     MORNING = 1
     AFTERNOON = 2
@@ -961,7 +1001,8 @@ class DashboardGreeting:
     MIDNIGHT = 4
 
 
-class HomeeUpdate:
+@unique
+class HomeeUpdate(IntEnum):
     STARTING = 0
     DOWNLOADING = 1
     ERROR_DOWNLOADING = 2
@@ -972,30 +1013,35 @@ class HomeeUpdate:
     SUCCESSFUL = 7
 
 
-class Service:
+@unique
+class Service(IntEnum):
     APPLE_HOME_KIT = 5
     GOOGLE_ASSISTANT = 6
     AMAZON_ALEXA = 7
     QUAR_Z = 8
 
 
-class BackupDestination:
+@unique
+class BackupDestination(IntEnum):
     NONE = 0
     FTP = 1
     DROPBOX = 2
 
 
-class BackupDestinationBitmask:
+@unique
+class BackupDestinationBitmask(IntEnum):
     DROPBOX = 6
     FTP = 7
 
 
-class HistoryDestination:
+@unique
+class HistoryDestination(IntEnum):
     NONE = 0
     FTP = 1
 
 
-class DiaryEventType:
+@unique
+class DiaryEventType(IntEnum):
     NONE = 0
     NODE_STATE_CHANGED = 1
     NODE_ATTRIBUTE_CHANGE_SENT = 2
@@ -1063,7 +1109,8 @@ class DiaryEventType:
     MLPRESENCE_DETECTION_TRAINING_COMPLETED = 708
 
 
-class DiaryCauseType:
+@unique
+class DiaryCauseType(IntEnum):
     NONE = 0
     NODE_ATTRIBUTE = 1
     HOMEEGRAM_TRIGGER = 10
@@ -1087,7 +1134,8 @@ class DiaryCauseType:
     EMAIL_VERIFY = 72
 
 
-class PlanType:
+@unique
+class PlanType(IntEnum):
     NONE = 0
     HEATING = 1
     Energy = 2
@@ -1099,7 +1147,8 @@ class PlanType:
     DAWN_AUTOMATION = 52
 
 
-class PlanEventType:
+@unique
+class PlanEventType(IntEnum):
     NONE = 0
     OPEN_WINDOW_DETECTION = 1
     AWAY_MODE = 2
@@ -1114,14 +1163,16 @@ class PlanEventType:
     MORNING = 11
     EVENING = 12
 
-class PlansTemplate:
+@unique
+class PlansTemplate(IntEnum):
     NONE = 0
     HEATING = 1
     HEATING_EMPTY = 2
     WIND_MONITORING = 50
 
 
-class PlanVariableType:
+@unique
+class PlanVariableType(IntEnum):
     NONE = 0
     TEMPERATURE_COMFORT_PLUS = 1
     TEMPERATURE_COMFORT = 2
