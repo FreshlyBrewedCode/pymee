@@ -8,6 +8,7 @@ import logging
 import re
 
 import aiohttp
+import aiohttp.client_exceptions
 from aiohttp.helpers import BasicAuth
 import websockets
 
@@ -29,7 +30,7 @@ class Homee:
         ping_interval: int = 30,
         reconnect_interval: int = 5,
         reconnect: bool = True,
-        max_retries: int = 5
+        max_retries: int = 5,
     ) -> None:
         """Initialize the virtual Homee."""
         self.host = host
@@ -83,9 +84,9 @@ class Homee:
             req = await client.post(
                 url, auth=auth, data=data, headers=headers, timeout=5
             )
-        except Exception as e:
+        except aiohttp.client_exceptions.ClientError as e:
             await client.close()
-            raise e
+            raise AuthenticationFailedException from e
 
         try:
             req_text = await req.text()
@@ -97,9 +98,9 @@ class Homee:
 
             self.retries = 0
 
-        except:
+        except aiohttp.client_exceptions.ClientError as e:
             await client.close()
-            raise AuthenticationFailedException
+            raise AuthenticationFailedException() from e
 
         await client.close()
         return self.token
@@ -131,7 +132,7 @@ class Homee:
 
             try:
                 await self.get_access_token()
-            except:
+            except AuthenticationFailedException:
                 # Reconnect
                 self.retries += 1
                 continue
