@@ -338,7 +338,7 @@ class HomeeNode:
         """Update a single attribute of a node."""
         attribute = self.get_attribute_by_id(attribute_data["id"])
         if attribute is not None:
-            attribute.set_data = attribute_data
+            attribute.set_data(attribute_data)
             for listener in self._on_changed_listeners:
                 listener(self, attribute)
 
