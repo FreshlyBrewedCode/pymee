@@ -100,7 +100,7 @@ class Homee:
 
         except aiohttp.client_exceptions.ClientError as e:
             await client.close()
-            raise AuthenticationFailedException() from e
+            raise AuthenticationFailedException from e
 
         await client.close()
         return self.token
