@@ -2,6 +2,288 @@
 
 
 
+## v2.0.0 (2024-06-10)
+
+### Breaking
+
+* fix: Finalise release.
+
+BREAKING CHANGE: Using IntEnum for constants.
+
+Addressing members changed.
+Corrected Names of following NodeProtocol entries:
+- WMBUS -&gt; WM_BUS
+- HTTPAVM -&gt; HTTP_AVM
+- HTTPNETATMO -&gt; HTTP_NETATMO
+- HTTPKOUBACHI -&gt; HTTP_KOUBACHI
+- HTTPNEST -&gt; HTTP_NEST
+- IOCUBE -&gt; IO_CUBE
+- HTTPCCU2 -&gt; HTTP_CCU_2
+- HTTPUPN_P -&gt; HTTP_UPN_P
+- HTTPNUKI -&gt; HTTP_NUKI
+- HTTPSEMS -&gt; HTTP_SEMS
+- SIGMA_ZWAVE -&gt; ZWAVE_V3
+- HTTPWOLF -&gt; HTTP_WOLF
+- HTTPMY_STROM -&gt; HTTP_MY_STROM
+
+Refactored code to make it python-standard-conforming:
+
+Homee attributes, that changed names:
+- pingInterval -&gt; ping_interval
+- reconnectInterval -&gt; reconnect_interval
+- maxRetries -&gt; max_retries
+- shouldReconnect -&gt; should_reconnect
+- deviceId -&gt; device_id
+- shouldClose -&gt; should_close
+
+Some methods are now public - the old private versions log deprecation warnings.
+
+Raw data of Homee Classes is now accessible through the .raw_data public attribute i.s.o .raw_data
+To update the raw data, the method .set_data(data) is used. ([`e2e1848`](https://github.com/FreshlyBrewedCode/pymee/commit/e2e18484c992848390069129581272b29caf3a3e))
+
+### Ci
+
+* ci: update release workflow to latest versions ([`785749f`](https://github.com/FreshlyBrewedCode/pymee/commit/785749fff9db004f3f6cca6253fb775ef81bb34a))
+
+### Unknown
+
+* Merge pull request #17 from Taraman17/master
+
+refactor: Change const classes to IntEnum, refactor code.
+
+BREAKING CHANGE: Using IntEnum for constants.
+
+Addressing members changed.
+Corrected Names of following NodeProtocol entries:
+
+    WMBUS -&gt; WM_BUS
+    HTTPAVM -&gt; HTTP_AVM
+    HTTPNETATMO -&gt; HTTP_NETATMO
+    HTTPKOUBACHI -&gt; HTTP_KOUBACHI
+    HTTPNEST -&gt; HTTP_NEST
+    IOCUBE -&gt; IO_CUBE
+    HTTPCCU2 -&gt; HTTP_CCU_2
+    HTTPUPN_P -&gt; HTTP_UPN_P
+    HTTPNUKI -&gt; HTTP_NUKI
+    HTTPSEMS -&gt; HTTP_SEMS
+    SIGMA_ZWAVE -&gt; ZWAVE_V3
+    HTTPWOLF -&gt; HTTP_WOLF
+    HTTPMY_STROM -&gt; HTTP_MY_STROM
+
+Refactored code to make it python-standard-conforming:
+
+Homee attributes, that changed names:
+
+    pingInterval -&gt; ping_interval
+    reconnectInterval -&gt; reconnect_interval
+    maxRetries -&gt; max_retries
+    shouldReconnect -&gt; should_reconnect
+    deviceId -&gt; device_id
+    shouldClose -&gt; should_close
+
+Some methods are now public - the old private versions log deprecation warnings.
+
+Raw data of Homee Classes is now accessible through the .raw_data public attribute i.s.o .raw_data
+To update the raw data, the method .set_data(data) is used. ([`8a27aa0`](https://github.com/FreshlyBrewedCode/pymee/commit/8a27aa08e342ddec1ee99aa3fab6aa2e2e92087c))
+
+* tackle linter warnings part 3 - exceptions ([`2aa0e07`](https://github.com/FreshlyBrewedCode/pymee/commit/2aa0e07dd3a9a4f4f0a6354811dbc2ffb9154346))
+
+* fix bug in update_attribute ([`04202d7`](https://github.com/FreshlyBrewedCode/pymee/commit/04202d7e3b55f4f1f0822d9b373839573dbe134f))
+
+* tackle linter warnings part 2 ([`dafaf2d`](https://github.com/FreshlyBrewedCode/pymee/commit/dafaf2d9645ea26b3621e8c76f35805d172bf666))
+
+* tackle linter warnings part 1 ([`413ac86`](https://github.com/FreshlyBrewedCode/pymee/commit/413ac86cce1c4fc58c2c263fb3f117b978fb1ee4))
+
+* Use IntEnum for const classes ([`895aa8c`](https://github.com/FreshlyBrewedCode/pymee/commit/895aa8cc7956d45db6e16c703bdc29f17a00cd92))
+
+* fix errors and add new constants from API ([`b55bc5f`](https://github.com/FreshlyBrewedCode/pymee/commit/b55bc5f2f4317c95136f52994746aab59a5d2e70))
+
+* Add logging of unsupported messages
+
+This logs messages that are not understood by pymee, so we can see these and add support easier. ([`e519233`](https://github.com/FreshlyBrewedCode/pymee/commit/e519233e379e210926526ff8bfc99df52f75cdbb))
+
+
+## v1.11.2 (2024-03-18)
+
+### Fix
+
+* fix: Catch OS Level connection error (#14)
+
+* Remove expicit ping
+
+Removing the ping-handler function and it&#39;s call, since websockets sends pings automatically and the function was causing async_io errors.
+
+* Refine error handling and logging
+
+Narrrow websocket exception hadnling to &#34;ConnectionClosedError&#34; from &#34;ConnectionClosed&#34; where feasible.
+some logging changes
+
+* expose attribute_map
+
+Expose _attribute_map as public property, since it is used in hass-homee
+
+* Tackle deprecations and lint warnings
+
+- Replace typing.List with list
+- remove unnecessary else:s
+- use Callable from collections.abc
+
+* refine logging
+
+- log disconnect and reconnect once as per https://developers.home-assistant.io/docs/integration_quality_scale_index/
+- use %s instead of f-strings in Log-statements as per HA style guide: https://developers.home-assistant.io/docs/development_guidelines/#use-new-style-string-formatting
+
+* fix typo
+
+* fix some nits
+
+- make sure disconnect warning is only logged once.
+- move logging of reconnect attempts to proper location.
+
+* Deal with attributes without options
+
+If trying to access options if the attribute has none leads to an error.
+This fixes it.
+
+* Now really deal with empty options
+
+First attempt had a wrong idea.
+
+* Add catch for OS ConnectionError
+
+If a connection error throws at  OS Level (e.g. 113 -  No route to host), it was not caught. ([`06a15e4`](https://github.com/FreshlyBrewedCode/pymee/commit/06a15e465f42e82c58f9b02bf4b665f6bb09d6d9))
+
+
+## v1.11.1 (2024-02-06)
+
+### Fix
+
+* fix: Fix error when HomeeAttribute has no options (#13)
+
+* Remove expicit ping
+
+Removing the ping-handler function and it&#39;s call, since websockets sends pings automatically and the function was causing async_io errors.
+
+* Refine error handling and logging
+
+Narrrow websocket exception hadnling to &#34;ConnectionClosedError&#34; from &#34;ConnectionClosed&#34; where feasible.
+some logging changes
+
+* expose attribute_map
+
+Expose _attribute_map as public property, since it is used in hass-homee
+
+* Tackle deprecations and lint warnings
+
+- Replace typing.List with list
+- remove unnecessary else:s
+- use Callable from collections.abc
+
+* refine logging
+
+- log disconnect and reconnect once as per https://developers.home-assistant.io/docs/integration_quality_scale_index/
+- use %s instead of f-strings in Log-statements as per HA style guide: https://developers.home-assistant.io/docs/development_guidelines/#use-new-style-string-formatting
+
+* fix typo
+
+* fix some nits
+
+- make sure disconnect warning is only logged once.
+- move logging of reconnect attempts to proper location.
+
+* Deal with attributes without options
+
+If trying to access options if the attribute has none leads to an error.
+This fixes it.
+
+* Now really deal with empty options
+
+First attempt had a wrong idea. ([`cbb67ae`](https://github.com/FreshlyBrewedCode/pymee/commit/cbb67ae6f6a3f05129a73708a109434078243571))
+
+
+## v1.11.0 (2024-01-31)
+
+### Feature
+
+* feat: Fix automatic reconnection (#12)
+
+* Remove expicit ping
+
+Removing the ping-handler function and it&#39;s call, since websockets sends pings automatically and the function was causing async_io errors.
+
+* Refine error handling and logging
+
+Narrrow websocket exception hadnling to &#34;ConnectionClosedError&#34; from &#34;ConnectionClosed&#34; where feasible.
+some logging changes
+
+* expose attribute_map
+
+Expose _attribute_map as public property, since it is used in hass-homee
+
+* Tackle deprecations and lint warnings
+
+- Replace typing.List with list
+- remove unnecessary else:s
+- use Callable from collections.abc
+
+* refine logging
+
+- log disconnect and reconnect once as per https://developers.home-assistant.io/docs/integration_quality_scale_index/
+- use %s instead of f-strings in Log-statements as per HA style guide: https://developers.home-assistant.io/docs/development_guidelines/#use-new-style-string-formatting
+
+* fix typo
+
+* fix some nits
+
+- make sure disconnect warning is only logged once.
+- move logging of reconnect attempts to proper location. ([`2db8f2f`](https://github.com/FreshlyBrewedCode/pymee/commit/2db8f2ff240814bdf2fc7295ffa9bded87b66e5d))
+
+
+## v1.10.3 (2023-11-12)
+
+### Fix
+
+* fix: &#39;list&#39; object is not an iterator &amp; spaces in homee name (#11)
+
+* add function to get an update for an attribute
+
+* Change get_attribute to update_attribute and add update_node
+
+* Fix invalid state error
+
+* Add manual update functions to readme
+
+* fix list object is not an iterator
+
+* unquote homee_name
+
+closes #7 ([`1a8dcc1`](https://github.com/FreshlyBrewedCode/pymee/commit/1a8dcc16f6dc7b52ce6e3593fb05e65dd02b7993))
+
+
+## v1.10.2 (2023-11-04)
+
+### Fix
+
+* fix: Fix &#34;&#39;list&#39; object is not an iterator&#34; (#10)
+
+* add function to get an update for an attribute
+
+* Change get_attribute to update_attribute and add update_node
+
+* Fix invalid state error
+
+* Add manual update functions to readme ([`87d90d1`](https://github.com/FreshlyBrewedCode/pymee/commit/87d90d1060b9b8203180f9d6b8e6d5f8721cb7ab))
+
+
+## v1.10.1 (2023-10-24)
+
+### Fix
+
+* fix: fix version number in setup.py ([`1f8fdb7`](https://github.com/FreshlyBrewedCode/pymee/commit/1f8fdb73f33d91d64f045aec7c59119683c57a46))
+
+* fix: fix workflow and trigger release ([`22e4c58`](https://github.com/FreshlyBrewedCode/pymee/commit/22e4c5825774dec96d42c6c616083f0324d49b3a))
+
+
 ## v1.10.0 (2023-10-24)
 
 ### Feature
