@@ -2,6 +2,25 @@
 
 
 
+## v2.0.2 (2024-06-10)
+
+### Fix
+
+* fix: workflow checkout action ([`75fb990`](https://github.com/FreshlyBrewedCode/pymee/commit/75fb990d075623e9eccc8bef074aed9d77e64629))
+
+### Unknown
+
+* Merge pull request #22 from Taraman17/master
+
+fix: workflow checkout action ([`7698e52`](https://github.com/FreshlyBrewedCode/pymee/commit/7698e5224c692afe5f11043b27358f5c1797a9af))
+
+* Merge pull request #21 from Taraman17/master
+
+fix release workflow pypi token ([`fc93ce2`](https://github.com/FreshlyBrewedCode/pymee/commit/fc93ce2f07b8f4a02ae5b44b5e062e249ed2eadf))
+
+* fix release workflow pypi token ([`06d5103`](https://github.com/FreshlyBrewedCode/pymee/commit/06d5103d06ec9e5227507aaae8ecc04548a69288))
+
+
 ## v2.0.1 (2024-06-10)
 
 ### Fix
