@@ -2,6 +2,19 @@
 
 
 
+## v2.0.3 (2024-06-10)
+
+### Fix
+
+* fix: add package build to release action ([`f6d3230`](https://github.com/FreshlyBrewedCode/pymee/commit/f6d3230bbba2aacfbc87f9150d5c73e1c685a77f))
+
+### Unknown
+
+* Merge pull request #23 from Taraman17/master
+
+fix: add package build to release action ([`f282bd7`](https://github.com/FreshlyBrewedCode/pymee/commit/f282bd74147324c2a0647e04f5a2668d1db82d87))
+
+
 ## v2.0.2 (2024-06-10)
 
 ### Fix
