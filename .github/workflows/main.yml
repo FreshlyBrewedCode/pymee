@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@main
       with:
         fetch-depth: 0
 
     - name: Python Semantic Release
-      uses: relekang/python-semantic-release@v7.34.6
+      uses: relekang/python-semantic-release@v9.8.1
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         pypi_token: ${{ secrets.PYPI_TOKEN }}
