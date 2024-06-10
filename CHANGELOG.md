@@ -2,6 +2,31 @@
 
 
 
+## v2.0.1 (2024-06-10)
+
+### Fix
+
+* fix: permissions for release workflow ([`b063c91`](https://github.com/FreshlyBrewedCode/pymee/commit/b063c9125bb3825b696f09b93db53cc3b167a8a5))
+
+* fix: release workflow 2nd try ([`598e592`](https://github.com/FreshlyBrewedCode/pymee/commit/598e592e2fa2e8224571424b7ada7bdd63680d9a))
+
+* fix: release workflow ([`1d77638`](https://github.com/FreshlyBrewedCode/pymee/commit/1d77638587c72420da5187668a9be13486c7dee6))
+
+### Unknown
+
+* Merge pull request #20 from Taraman17/master
+
+fix: permissions for release workflow ([`99a38d2`](https://github.com/FreshlyBrewedCode/pymee/commit/99a38d2da4bfe376e22dc9fad25ffd11f1880656))
+
+* Merge pull request #19 from Taraman17/master
+
+fix: release workflow 2nd try ([`1b2a98e`](https://github.com/FreshlyBrewedCode/pymee/commit/1b2a98eff9f8e026a2c582e236740f05d022c8af))
+
+* Merge pull request #18 from Taraman17/master
+
+fix: release workflow ([`7fe5760`](https://github.com/FreshlyBrewedCode/pymee/commit/7fe5760ef5af962d1ea2c675232bf3f4d5e22797))
+
+
 ## v2.0.0 (2024-06-10)
 
 ### Breaking
