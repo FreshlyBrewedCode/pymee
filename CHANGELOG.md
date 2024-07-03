@@ -2,6 +2,44 @@
 
 
 
+## v2.0.5 (2024-07-03)
+
+### Fix
+
+* fix: deprecation in upload-artifacts action ([`f89de1d`](https://github.com/FreshlyBrewedCode/pymee/commit/f89de1d14e2fd5732578e9b20c181101647c6ab8))
+
+### Unknown
+
+* Merge pull request #28 from Taraman17/master
+
+fix: deprecation in upload-artifacts action ([`3549088`](https://github.com/FreshlyBrewedCode/pymee/commit/35490881478b5716333c7c29ca5b1aeacd7e166d))
+
+* Merge pull request #27 from Taraman17/master
+
+setup new workflow again after fixes on pypi ([`b6b4ddf`](https://github.com/FreshlyBrewedCode/pymee/commit/b6b4ddf529f2a5f3fc705150634441894af3cb09))
+
+* setup new workflow again after fixes on pypi ([`4cabdb1`](https://github.com/FreshlyBrewedCode/pymee/commit/4cabdb17f21afc517cf07780408d26cb88eb2f06))
+
+
+## v2.0.4 (2024-06-10)
+
+### Fix
+
+* fix: version number for current workflow ([`47a786b`](https://github.com/FreshlyBrewedCode/pymee/commit/47a786b83ef243e9386748a35a1880f3fb473597))
+
+* fix: revert python-smantic-release to v7 ([`4e56b3c`](https://github.com/FreshlyBrewedCode/pymee/commit/4e56b3c55a631093174af818d126ef24de922009))
+
+### Unknown
+
+* Merge pull request #25 from Taraman17/master
+
+fix: version number for current workflow ([`6d71930`](https://github.com/FreshlyBrewedCode/pymee/commit/6d719301105d6cb028a83f58f93e7ed413f7dd4f))
+
+* Merge pull request #24 from Taraman17/master
+
+fix: revert python-smantic-release to v7 ([`8784619`](https://github.com/FreshlyBrewedCode/pymee/commit/8784619b9582796cec0ebf7cf7f0bc5ea8dc460d))
+
+
 ## v2.0.3 (2024-06-10)
 
 ### Fix
