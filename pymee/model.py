@@ -3,6 +3,7 @@
 from collections.abc import Callable
 import logging
 from urllib.parse import unquote
+from .const import NodeProtocol, WarningCode
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -610,6 +611,80 @@ class HomeeRelationship:
     def set_data(self, data: str) -> None:
         """Update data of the relationship."""
         self._data = data
+
+
+class HomeeWarningData:
+    """Representation of the data part of a Homee warning."""
+
+    def __init__(self, data) -> None:
+        """Initialize warning data."""
+        self._data = data
+
+    @property
+    def raw_data(self):
+        """Return Raw JSON Data of the warning."""
+        return self._data
+
+    @property
+    def protocol(self) -> int | None:
+        """Return the protocol, the warning originates from."""
+        if "protocol" in self._data:
+            return self._data["protocol"]
+
+        return None
+
+    @property
+    def protocol_string(self) -> str:
+        """Return the descriptive string for the protocol."""
+        if "protocol" in self._data:
+            return NodeProtocol(self._data["protocol"]).name
+
+    @property
+    def reason(self) -> str:
+        """Return the reason for the warning."""
+        if "reason" in self._data:
+            return self._data["reason"]
+
+        return ""
+
+
+class HomeeWarning:
+    """Representation of a Homee warning message."""
+
+    def __init__(self, data) -> None:
+        """Initialize the warning."""
+        self._data = data
+
+    @property
+    def code(self) -> int:
+        """Return the numerical code of the warning."""
+        return self._data["code"]
+
+    @property
+    def code_string(self) -> str:
+        """Return the descriptive string for the warning code."""
+        return WarningCode(self._data["code"]).name
+
+    @property
+    def description(self) -> str:
+        """Return the text description of the warning."""
+        return self._data["description"]
+
+    @property
+    def message(self) -> str:
+        """Return the message of the warning."""
+        return self._data["message"]
+
+    @property
+    def data(self) -> HomeeWarningData:
+        """The data collection of the warning. Optional, not on every warning."""
+        if "data" in self._data:
+            return HomeeWarningData(self._data["data"])
+
+        return []
+
+    def set_data(self, data: str) -> None:
+        """Update data of the warning"""
 
 
 # JSON to Python regex:

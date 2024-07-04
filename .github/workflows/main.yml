@@ -23,6 +23,12 @@ jobs:
       with:
         python-version: "3.x"
 
+    - name: Python Semantic Release
+      id: release
+      uses: python-semantic-release/python-semantic-release@v9.8.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Install pypa/build
       run: >-
         python3 -m
@@ -36,12 +42,6 @@ jobs:
       with:
         name: python-package-distributions
         path: dist/
-
-    - name: Python Semantic Release
-      id: release
-      uses: python-semantic-release/python-semantic-release@v9.8.1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - run: python3 -m pip install --upgrade build && python3 -m build
 

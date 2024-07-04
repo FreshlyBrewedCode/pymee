@@ -13,7 +13,7 @@ from aiohttp.helpers import BasicAuth
 import websockets
 
 from .const import DeviceApp, DeviceOS, DeviceType
-from .model import HomeeGroup, HomeeNode, HomeeRelationship, HomeeSettings
+from .model import HomeeGroup, HomeeNode, HomeeRelationship, HomeeSettings, HomeeWarning
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,6 +49,7 @@ class Homee:
         self.nodes: list[HomeeNode] = []
         self.groups: list[HomeeGroup] = []
         self.relationships: list[HomeeRelationship] = []
+        self.warning: HomeeWarning = None
         self.token = ""
         self.expires = 0
         self.connected = False
@@ -310,6 +311,8 @@ class Homee:
 
         elif msg_type == "attribute":
             await self._handle_attribute_change(msg["attribute"])
+        elif msg_type == "group":
+            self._update_or_create_group(msg["group"])
         elif msg_type == "groups":
             for data in msg["groups"]:
                 self._update_or_create_group(data)
@@ -318,13 +321,13 @@ class Homee:
         elif msg_type == "nodes":
             for data in msg["nodes"]:
                 self._update_or_create_node(data)
+        elif msg_type == "relationship":
+            self._update_or_create_relationship(msg["relationship"])
         elif msg_type == "relationships":
             self._update_or_create_relationships(msg["relationships"])
             self._remap_relationships()
-        elif msg_type == "group":
-            self._update_or_create_group(msg["group"])
-        elif msg_type == "relationship":
-            self._update_or_create_relationship(msg["relationship"])
+        elif msg_type == "warning":
+            await self._update_warning(msg["warning"])
         else:
             _LOGGER.info(
                 "Unknown/Unsupported message type: %s.\nMessage: %s", msg_type, msg
@@ -394,6 +397,11 @@ class Homee:
             if node is not None and group is not None:
                 node.groups.append(group)
                 group.nodes.append(node)
+
+    async def _update_warning(self, data: dict):
+        """Set the warning to the latest one received"""
+        self.warning = HomeeWarning(data)
+        await self.on_warning()
 
     def get_node_index(self, node_id: int) -> int:
         """Return the index of the node with the given id or -1 if none exists."""
@@ -495,6 +503,9 @@ class Homee:
 
         The message is automatically parsed from json into a dictionary.
         """
+
+    async def on_warning(self):
+        """Execute when a warning message is received."""
 
     async def on_attribute_updated(self, attribute_data: dict, node: HomeeNode):
         """Execute when an 'attribute' message was received and an attribute was updated.
