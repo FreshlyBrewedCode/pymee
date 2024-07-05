@@ -2,6 +2,26 @@
 
 
 
+## v2.1.0 (2024-07-04)
+
+### Feature
+
+* feat: parse warning message
+This adds support for the warning message type in shich homee announces events or start and stop of certain modes. ([`86d63f5`](https://github.com/FreshlyBrewedCode/pymee/commit/86d63f57272425a853bafea4e881437530015edd))
+
+### Fix
+
+* fix: order of github release actions ([`5592df0`](https://github.com/FreshlyBrewedCode/pymee/commit/5592df054d262cc00cc60a594eb3910576aa0bcb))
+
+### Unknown
+
+* Merge pull request #29 from Taraman17/master
+
+Add Support for warning message ([`92d3273`](https://github.com/FreshlyBrewedCode/pymee/commit/92d3273290fb6dd433635f2d4780749be5e50180))
+
+* Merge branch &#39;FreshlyBrewedCode:master&#39; into master ([`3238a85`](https://github.com/FreshlyBrewedCode/pymee/commit/3238a85cf9d6a9d886cae67f80c30915ba384c76))
+
+
 ## v2.0.5 (2024-07-03)
 
 ### Fix
