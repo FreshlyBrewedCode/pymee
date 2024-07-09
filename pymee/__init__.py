@@ -13,7 +13,15 @@ from aiohttp.helpers import BasicAuth
 import websockets
 
 from .const import DeviceApp, DeviceOS, DeviceType
-from .model import HomeeGroup, HomeeNode, HomeeRelationship, HomeeSettings, HomeeWarning
+from .model import (
+    HomeeDevice,
+    HomeeGroup,
+    HomeeNode,
+    HomeeRelationship,
+    HomeeSettings,
+    HomeeUser,
+    HomeeWarning,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -45,10 +53,12 @@ class Homee:
 
         self.device_id = str(device).lower().replace(" ", "-")
 
-        self.settings: HomeeSettings = None
-        self.nodes: list[HomeeNode] = []
+        self.devices: list[HomeeDevice] = []
         self.groups: list[HomeeGroup] = []
+        self.nodes: list[HomeeNode] = []
         self.relationships: list[HomeeRelationship] = []
+        self.settings: HomeeSettings = None
+        self.users: list[HomeeUser] = []
         self.warning: HomeeWarning = None
         self.token = ""
         self.expires = 0
@@ -292,17 +302,20 @@ class Homee:
 
             # Create / Update nodes
             if len(self.nodes) <= 0:
-                self.nodes = list(map(lambda n: HomeeNode(n), msg["all"]["nodes"]))
+                # Since there might be lots of nodes, we don't want to check for
+                # all in the next step, so if we start up, just add all nodes.
+                self.nodes = [HomeeNode(node_data) for node_data in msg["all"]["nodes"]]
             else:
                 for node_data in msg["all"]["nodes"]:
                     self._update_or_create_node(node_data)
 
-            # Update / Create groups
-            if len(self.groups) <= 0:
-                self.groups = list(map(lambda g: HomeeGroup(g), msg["all"]["groups"]))
-            else:
-                for group_data in msg["all"]["groups"]:
-                    self._update_or_create_group(group_data)
+            # Create / Update groups
+            for group_data in msg["all"]["groups"]:
+                self._update_or_create_group(group_data)
+
+            # Create / Update users
+            for user_data in msg["all"]["users"]:
+                self._update_or_create_user(user_data)
 
             self._update_or_create_relationships(msg["all"]["relationships"])
 
@@ -311,6 +324,12 @@ class Homee:
 
         elif msg_type == "attribute":
             await self._handle_attribute_change(msg["attribute"])
+        # Not sure, if devices can be sent alone or only with user, but just in case...
+        elif msg_type == "device":
+            self._update_or_create_device(msg["device"])
+        elif msg_type == "devices":
+            for data in msg["devices"]:
+                self._update_or_create_device(data)
         elif msg_type == "group":
             self._update_or_create_group(msg["group"])
         elif msg_type == "groups":
@@ -326,6 +345,11 @@ class Homee:
         elif msg_type == "relationships":
             self._update_or_create_relationships(msg["relationships"])
             self._remap_relationships()
+        elif msg_type == "user":
+            self._update_or_create_user(msg["user"])
+        elif msg_type == "users":
+            for data in msg["users"]:
+                self._update_or_create_user(data)
         elif msg_type == "warning":
             await self._update_warning(msg["warning"])
         else:
@@ -376,7 +400,9 @@ class Homee:
 
     def _update_or_create_relationships(self, data: dict):
         if len(self.relationships) <= 0:
-            self.relationships = list(map(lambda r: HomeeRelationship(r), data))
+            self.relationships = [
+                HomeeRelationship(relationship_data) for relationship_data in data
+            ]
         else:
             for relationship_data in data:
                 self._update_or_create_relationship(relationship_data)
@@ -398,8 +424,28 @@ class Homee:
                 node.groups.append(group)
                 group.nodes.append(node)
 
+    def _update_or_create_user(self, data: dict):
+        """Create a user or update if already exists."""
+        user = self.get_user_by_id(data["id"])
+        if user is not None:
+            user.set_data(data)
+        else:
+            self.users.append(HomeeUser(data))
+
+        # Create / Update the devices of the user
+        for device in data["devices"]:
+            self._update_or_create_device(device)
+
+    def _update_or_create_device(self, data: dict):
+        """Create a device or update if already exists."""
+        device = self.get_device_by_id(data["id"])
+        if device is not None:
+            device.set_data(data)
+        else:
+            self.devices.append(HomeeDevice(data))
+
     async def _update_warning(self, data: dict):
-        """Set the warning to the latest one received"""
+        """Set the warning to the latest one received."""
         self.warning = HomeeWarning(data)
         await self.on_warning()
 
@@ -408,7 +454,7 @@ class Homee:
         return next((i for i, node in enumerate(self.nodes) if node.id == node_id), -1)
 
     def get_node_by_id(self, node_id: int) -> HomeeNode:
-        """Return the node with the given id or `None` if none exists."""
+        """Return the node with the given id or 'None' if none exists."""
         index = self.get_node_index(node_id)
         return self.nodes[index] if index != -1 else None
 
@@ -419,9 +465,21 @@ class Homee:
         )
 
     def get_group_by_id(self, group_id: int) -> HomeeGroup:
-        """Return the group with the given id or `None` if no group with the given id exists."""
+        """Return the group with the given id or 'None' if no group with the given id exists."""
         index = self.get_group_index(group_id)
         return self.groups[index] if index != -1 else None
+
+    def get_user_by_id(self, user_id: int) -> HomeeUser:
+        """Return the user with the given id or 'None' if no user with the given id exists."""
+        index = next((i for i, user in enumerate(self.users) if user.id == user_id), -1)
+        return self.users[index] if index != -1 else None
+
+    def get_device_by_id(self, device_id: int) -> HomeeDevice:
+        """Return the device with the given id or 'None' if no device with the given id exists."""
+        index = next(
+            (i for i, device in enumerate(self.devices) if device.id == device_id), -1
+        )
+        return self.devices[index] if index != -1 else None
 
     async def set_value(self, device_id: int, attribute_id: int, value: float):
         """Set the target value of an attribute of a device."""

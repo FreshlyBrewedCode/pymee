@@ -440,6 +440,11 @@ class HomeeSettings:
         self._data = data
 
     @property
+    def raw_data(self) -> str:
+        """Return raw settings data."""
+        return self._data
+
+    @property
     def address(self) -> str:
         """Street set by user."""
         return self._data["address"]
@@ -579,6 +584,10 @@ class HomeeSettings:
     def extensions(self) -> list[dict]:
         return self._data["extensions"]
 
+    def set_data(self, data: str) -> None:
+        """Update data of the settings object."""
+        self._data = data
+
 
 class HomeeRelationship:
     """Representation of a Homee relationship."""
@@ -621,11 +630,6 @@ class HomeeWarningData:
         self._data = data
 
     @property
-    def raw_data(self):
-        """Return Raw JSON Data of the warning."""
-        return self._data
-
-    @property
     def protocol(self) -> int | None:
         """Return the protocol, the warning originates from."""
         if "protocol" in self._data:
@@ -656,6 +660,11 @@ class HomeeWarning:
         self._data = data
 
     @property
+    def raw_data(self):
+        """Return Raw JSON Data of the warning."""
+        return self._data
+
+    @property
     def code(self) -> int:
         """Return the numerical code of the warning."""
         return self._data["code"]
@@ -684,7 +693,292 @@ class HomeeWarning:
         return []
 
     def set_data(self, data: str) -> None:
-        """Update data of the warning"""
+        """Update data of the warning."""
+        self._data = data
+
+
+class HomeeDevice:
+    """Represent a Homee device."""
+
+    def __init__(self, data: dict) -> None:
+        """Initialize the device."""
+        self._data = data
+
+    @property
+    def raw_data(self) -> dict:
+        """Return the raw JSON data of the device."""
+        return self._data
+
+    @property
+    def id(self) -> int:
+        """Return the unique id of the device."""
+        return self._data["id"]
+
+    @property
+    def user_id(self) -> int:
+        """Return the id of the user the device belongs to."""
+        return self._data["user_id"]
+
+    @property
+    def hardware_id(self) -> str:
+        """Return the hardware id of the device."""
+        return self._data["hardware_id"]
+
+    @property
+    def name(self) -> str:
+        """Return the name of the device."""
+        return unquote(self._data["name"])
+
+    @property
+    def added(self) -> int:
+        """Return the time the device was added."""
+        return self._data["added"]
+
+    @property
+    def last_connected(self) -> int:
+        """Return the last time the device was connected."""
+        return self._data["last_connected"]
+
+    @property
+    def os(self) -> int:
+        """Return the operating system of the device."""
+        return self._data["os"]
+
+    @property
+    def type(self) -> int:
+        """Return the type of the device."""
+        return self._data["type"]
+
+    @property
+    def app(self) -> int:
+        """Return the app version of the device."""
+        return self._data["app"]
+
+    @property
+    def connected(self) -> bool:
+        """Return whether the device is currently connected."""
+        return bool(self._data["connected"])
+
+    @property
+    def push_registration_id(self) -> str:
+        """Return the push registration id of the device."""
+        return self._data["push_registration_id"]
+
+    def set_data(self, data: str) -> None:
+        """Update data of the device"""
+        self._data = data
+
+
+class HomeeUser:
+    """Represent a Homee user."""
+
+    def __init__(self, data: dict) -> None:
+        """Initialize the user."""
+        self._data = data
+
+    @property
+    def raw_data(self) -> dict:
+        """Return the raw JSON data of the user."""
+        return self._data
+
+    @property
+    def id(self) -> int:
+        """Return the unique id of the user."""
+        return self._data["id"]
+
+    @property
+    def username(self) -> str:
+        """Return the username of the user."""
+        return self._data["username"]
+
+    @property
+    def forename(self) -> str:
+        """Return the forename of the user."""
+        return self._data["forename"]
+
+    @property
+    def surname(self) -> str:
+        """Return the surname of the user."""
+        return self._data["surname"]
+
+    @property
+    def image(self) -> str:
+        """Return the image of the user."""
+        return self._data["image"]
+
+    @property
+    def role(self) -> int:
+        """Return the role of the user."""
+        return self._data["role"]
+
+    @property
+    def type(self) -> int:
+        """Return the type of the user."""
+        return self._data["type"]
+
+    @property
+    def email(self) -> str:
+        """Return the email of the user."""
+        return self._data["email"]
+
+    @property
+    def phone(self) -> str:
+        """Return the phone number of the user."""
+        return self._data["phone"]
+
+    @property
+    def added(self) -> int:
+        """Return the time the user was added."""
+        return self._data["added"]
+
+    @property
+    def homee_image(self) -> str:
+        """Return the homee image of the user."""
+        return self._data["homee_image"]
+
+    @property
+    def access(self) -> int:
+        """Return the access level of the user."""
+        return self._data["access"]
+
+    @property
+    def presence_detection(self) -> bool:
+        """Return whether presence detection is enabled for the user."""
+        return bool(self._data["presence_detection"])
+
+    @property
+    def cube_push_notifications(self) -> bool:
+        """Return whether cube push notifications are enabled for the user."""
+        return bool(self._data["cube_push_notifications"])
+
+    @property
+    def cube_email_notifications(self) -> bool:
+        """Return whether cube email notifications are enabled for the user."""
+        return bool(self._data["cube_email_notifications"])
+
+    @property
+    def cube_sms_notifications(self) -> bool:
+        """Return whether cube SMS notifications are enabled for the user."""
+        return bool(self._data["cube_sms_notifications"])
+
+    @property
+    def warning_push_notifications(self) -> bool:
+        """Return whether warning push notifications are enabled for the user."""
+        return bool(self._data["warning_push_notifications"])
+
+    @property
+    def warning_push_notifications_as_critical(self) -> bool:
+        """Return whether warning push notifications are marked as critical for the user."""
+        return bool(self._data["warning_push_notifications_as_critical"])
+
+    @property
+    def warning_email_notifications(self) -> bool:
+        """Return whether warning email notifications are enabled for the user."""
+        return bool(self._data["warning_email_notifications"])
+
+    @property
+    def warning_sms_notifications(self) -> bool:
+        """Return whether warning SMS notifications are enabled for the user."""
+        return bool(self._data["warning_sms_notifications"])
+
+    @property
+    def node_push_notifications(self) -> bool:
+        """Return whether node push notifications are enabled for the user."""
+        return bool(self._data["node_push_notifications"])
+
+    @property
+    def node_email_notifications(self) -> bool:
+        """Return whether node email notifications are enabled for the user."""
+        return bool(self._data["node_email_notifications"])
+
+    @property
+    def node_sms_notifications(self) -> bool:
+        """Return whether node SMS notifications are enabled for the user."""
+        return bool(self._data["node_sms_notifications"])
+
+    @property
+    def update_push_notifications(self) -> bool:
+        """Return whether update push notifications are enabled for the user."""
+        return bool(self._data["update_push_notifications"])
+
+    @property
+    def update_email_notifications(self) -> bool:
+        """Return whether update email notifications are enabled for the user."""
+        return bool(self._data["update_email_notifications"])
+
+    @property
+    def update_sms_notifications(self) -> bool:
+        """Return whether update SMS notifications are enabled for the user."""
+        return bool(self._data["update_sms_notifications"])
+
+    @property
+    def homeegram_push_notifications(self) -> bool:
+        """Return whether homeegram push notifications are enabled for the user."""
+        return bool(self._data["homeegram_push_notifications"])
+
+    @property
+    def homeegram_email_notifications(self) -> bool:
+        """Return whether homeegram email notifications are enabled for the user."""
+        return bool(self._data["homeegram_email_notifications"])
+
+    @property
+    def homeegram_sms_notifications(self) -> bool:
+        """Return whether homeegram SMS notifications are enabled for the user."""
+        return bool(self._data["homeegram_sms_notifications"])
+
+    @property
+    def api_push_notifications(self) -> bool:
+        """Return whether API push notifications are enabled for the user."""
+        return bool(self._data["api_push_notifications"])
+
+    @property
+    def api_email_notifications(self) -> bool:
+        """Return whether API email notifications are enabled for the user."""
+        return bool(self._data["api_email_notifications"])
+
+    @property
+    def api_sms_notifications(self) -> bool:
+        """Return whether API SMS notifications are enabled for the user."""
+        return bool(self._data["api_sms_notifications"])
+
+    @property
+    def plan_push_notifications(self) -> bool:
+        """Return whether plan push notifications are enabled for the user."""
+        return bool(self._data["plan_push_notifications"])
+
+    @property
+    def plan_email_notifications(self) -> bool:
+        """Return whether plan email notifications are enabled for the user."""
+        return bool(self._data["plan_email_notifications"])
+
+    @property
+    def plan_sms_notifications(self) -> bool:
+        """Return whether plan SMS notifications are enabled for the user."""
+        return bool(self._data["plan_sms_notifications"])
+
+    @property
+    def watchdog_push_notifications(self) -> bool:
+        """Return whether watchdog push notifications are enabled for the user."""
+        return bool(self._data["watchdog_push_notifications"])
+
+    @property
+    def watchdog_email_notifications(self) -> bool:
+        """Return whether watchdog email notifications are enabled for the user."""
+        return bool(self._data["watchdog_email_notifications"])
+
+    @property
+    def watchdog_sms_notifications(self) -> bool:
+        """Return whether watchdog SMS notifications are enabled for the user."""
+        return bool(self._data["watchdog_sms_notifications"])
+
+    @property
+    def devices(self) -> list[HomeeDevice]:
+        """Return the list of devices associated with the user."""
+        return self._devices
+
+    def set_data(self, data: str) -> None:
+        """Update data of the user"""
+        self._data = data
 
 
 # JSON to Python regex:
