@@ -2,6 +2,41 @@
 
 
 
+## v2.2.0 (2024-07-09)
+
+### Feature
+
+* feat: Add parsing of users and devices.
+Adding support for homee users and their devices reported by the cube.
+Available via `Homee.users` and `Homee.devices` ([`0818f8c`](https://github.com/FreshlyBrewedCode/pymee/commit/0818f8ca4140348f6d01f68b5b66836a1917530b))
+
+### Unknown
+
+* Merge pull request #31 from Taraman17/master
+
+feat: Add parsing of users and devices. ([`df49ba0`](https://github.com/FreshlyBrewedCode/pymee/commit/df49ba03919535c8237bd54e95f3d59973163f7d))
+
+* Merge pull request #30 from Taraman17/master
+
+fix: semantic release config ([`54b6004`](https://github.com/FreshlyBrewedCode/pymee/commit/54b6004ad5d776fda0c4a42fb7443ae605ad140e))
+
+* Delete setup.cfg
+
+Delete the old config file. ([`b4ae220`](https://github.com/FreshlyBrewedCode/pymee/commit/b4ae220ccc1047b6eaedef631d77b281cf8b4757))
+
+* Update pyproject.toml
+
+Config for writing version by semantic release ([`649867d`](https://github.com/FreshlyBrewedCode/pymee/commit/649867d70fdc26c59fe49bc650c11d0601b707e5))
+
+* Create pyproject.toml
+
+Prepare new config for semantic release ([`be4105b`](https://github.com/FreshlyBrewedCode/pymee/commit/be4105b82c077e680aa18dffde6f85cb435d5b77))
+
+* Merge pull request #10 from FreshlyBrewedCode/master
+
+Get fork up to date ([`2a01f0a`](https://github.com/FreshlyBrewedCode/pymee/commit/2a01f0a5467e52afc093a5ffe9d0ea08f8562181))
+
+
 ## v2.1.0 (2024-07-04)
 
 ### Feature
