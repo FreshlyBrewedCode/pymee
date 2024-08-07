@@ -180,6 +180,7 @@ class NodeProtocol(IntEnum):
     HTTP_MY_STROM = 24
     HTTP_STECA = 25
     MQTT_SHELLY = 27
+    VIRTUAL_DEVICE = 28
     ALL = 100
 
 
