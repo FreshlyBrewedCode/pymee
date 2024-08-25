@@ -2,6 +2,22 @@
 
 
 
+## v2.3.0 (2024-08-25)
+
+### Feature
+
+* feat: Add VIRTUAL_DEVICE as NodeProtocol 28 ([`8030e3f`](https://github.com/FreshlyBrewedCode/pymee/commit/8030e3f43a6630ea42da1d78d2044b86db6c15ed))
+
+* feat: Add MAC Address to settings
+This will add the MAC Address derived from HomeeID as homee.settings.mac_address ([`9a998ce`](https://github.com/FreshlyBrewedCode/pymee/commit/9a998ce8f0b657b9c3d15a7d7b7a0ac759effc69))
+
+### Unknown
+
+* Merge pull request #34 from Taraman17/master
+
+Add MAC Address and &#34;Virtual Device&#34; Protocol ([`7ad9488`](https://github.com/FreshlyBrewedCode/pymee/commit/7ad948897accc88157eb1dcf8f668b2b195fe8fb))
+
+
 ## v2.2.0 (2024-07-09)
 
 ### Feature
